@@ -8,6 +8,7 @@ using GurpsWizard.App.Wizard.Steps;
 using GurpsWizard.Data;
 using GurpsWizard.Data.Gcs;
 using GurpsWizard.Data.Repositories;
+using GurpsWizard.App.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace GurpsWizard.App;
@@ -17,6 +18,9 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        SettingsService.Load();
+        if (SettingsService.Instance.EnableLogging) SettingsService.ClearLog();
+        SettingsService.Log("Aplicação inicializada.");
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -37,18 +41,18 @@ public partial class App : Application
 
                 try
                 {
-                    Console.WriteLine("[DEBUG] Iniciando inicialização de serviços...");
+                    SettingsService.Log("Iniciando inicialização de serviços...");
                     (libraryRepo, characterRepo) =
                         await InitializeServicesAsync(loadingVm.Progress);
-                    Console.WriteLine("[DEBUG] Serviços inicializados com sucesso.");
+                    SettingsService.Log("Serviços inicializados com sucesso.");
                     
                     // Pequeno delay para o usuário ler a última mensagem de status
                     await Task.Delay(500);
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("=== ERRO FATAL NA INICIALIZAÇÃO ===");
-                    Console.Error.WriteLine(ex.ToString());
+                    SettingsService.Log("=== ERRO FATAL NA INICIALIZAÇÃO ===");
+                    SettingsService.Log(ex.ToString());
 
                     var msg = UnwrapMessages(ex);
                     await Dispatcher.UIThread.InvokeAsync(() => {
@@ -63,20 +67,20 @@ public partial class App : Application
                 {
                     try
                     {
-                        Console.WriteLine("[DEBUG] Criando MainViewModel e MainWindow...");
+                        SettingsService.Log("Criando MainViewModel e MainWindow...");
                         var viewModel  = new MainViewModel(libraryRepo, characterRepo);
                         var mainWindow = new MainWindow { DataContext = viewModel };
 
-                        Console.WriteLine("[DEBUG] Trocando MainWindow e fechando loading...");
+                        SettingsService.Log("Trocando MainWindow e fechando loading...");
                         desktop.MainWindow = mainWindow;
                         mainWindow.Show();
                         loadingWindow.Close();
-                        Console.WriteLine("[DEBUG] Transição concluída.");
+                        SettingsService.Log("Transição concluída. App pronto.");
                     }
                     catch (Exception ex)
                     {
-                        Console.Error.WriteLine("=== ERRO AO ABRIR MAINWINDOW ===");
-                        Console.Error.WriteLine(ex.ToString());
+                        SettingsService.Log("=== ERRO AO ABRIR MAINWINDOW ===");
+                        SettingsService.Log(ex.ToString());
                     }
                 });
             });

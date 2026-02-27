@@ -37,11 +37,18 @@
                SelectedItem="{Binding SelectedLibrarySkill}">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid ColumnDefinitions="*,50,50" ToolTip.Tip="{Binding Notes}">
+            <Grid ColumnDefinitions="*,Auto,50,50" ToolTip.Tip="{Binding Notes}">
               <TextBlock Grid.Column="0" Text="{Binding DisplayName}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-              <TextBlock Grid.Column="1" Text="{Binding BaseAttribute}"
+              <Button Grid.Column="1" Padding="4,2" Margin="4,0"
+                      FontSize="10" Foreground="{DynamicResource SystemAccentColor}"
+                      Content="{Binding Reference}"
+                      Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
+                      CommandParameter="{Binding}"
+                      IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                      ToolTip.Tip="Abrir PDF na página"/>
+              <TextBlock Grid.Column="2" Text="{Binding BaseAttribute}"
                          HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
-              <TextBlock Grid.Column="2" Text="{Binding Difficulty}"
+              <TextBlock Grid.Column="3" Text="{Binding Difficulty}"
                          HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
             </Grid>
           </DataTemplate>
@@ -74,11 +81,18 @@
                SelectedItem="{Binding SelectedAddedSkill}">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid ColumnDefinitions="*,40,50">
+            <Grid ColumnDefinitions="*,Auto,40,50">
               <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-              <TextBlock Grid.Column="1" Text="{Binding Level, StringFormat='{}{0:+#;-#;0}'}"
+              <Button Grid.Column="1" Padding="4,2" Margin="4,0"
+                      FontSize="10" Foreground="{DynamicResource SystemAccentColor}"
+                      Content="{Binding Reference}"
+                      Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
+                      CommandParameter="{Binding}"
+                      IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                      ToolTip.Tip="Abrir PDF na página"/>
+              <TextBlock Grid.Column="2" Text="{Binding Level, StringFormat='{}{0:+#;-#;0}'}"
                          HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
-              <TextBlock Grid.Column="2" Text="{Binding Cost, StringFormat='{}{0} pts'}"
+              <TextBlock Grid.Column="3" Text="{Binding Cost, StringFormat='{}{0} pts'}"
                          HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
             </Grid>
           </DataTemplate>

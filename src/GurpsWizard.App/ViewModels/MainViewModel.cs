@@ -14,14 +14,21 @@ public class MainViewModel : ReactiveObject
     private readonly ICharacterRepository _characterRepo;
 
     [Reactive] public object? CurrentContent { get; private set; }
+    public PdfViewerViewModel PdfViewer { get; } = new();
 
     public MainViewModel(ILibraryRepository libraryRepo, ICharacterRepository characterRepo)
     {
         _libraryRepo   = libraryRepo;
         _characterRepo = characterRepo;
 
+        // Tornar o MainViewModel acessível estaticamente apenas para o PdfService simplificar o acoplamento
+        // (Alternativa: Injeção de dependência se houvesse um container)
+        Instance = this;
+
         ShowHome();
     }
+
+    public static MainViewModel? Instance { get; private set; }
 
     public void ShowHome()
     {
@@ -31,6 +38,11 @@ public class MainViewModel : ReactiveObject
     public void ShowCharacterList()
     {
         CurrentContent = new CharacterListViewModel(this, _characterRepo);
+    }
+
+    public void ShowSettings()
+    {
+        CurrentContent = new SettingsViewModel(this);
     }
 
     public void StartNewCharacter()

@@ -29,6 +29,7 @@ public class TraitsViewModel : ReactiveObject
 
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> AddCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> RemoveSelectedCommand { get; }
+    public ReactiveCommand<object, System.Reactive.Unit> OpenReferenceCommand { get; }
 
     public TraitsViewModel(WizardViewModel wizard, ILibraryRepository repo, bool isDisadvantage)
     {
@@ -60,6 +61,11 @@ public class TraitsViewModel : ReactiveObject
 
         AddCommand           = ReactiveCommand.CreateFromTask(AddSelectedAsync, canAdd);
         RemoveSelectedCommand = ReactiveCommand.Create(RemoveSelected, canRemove);
+        OpenReferenceCommand = ReactiveCommand.Create<object>(param =>
+        {
+            if (param is LibraryTrait lt) PdfService.OpenReference(lt.Reference, lt.Name);
+            else if (param is TraitEntry te) PdfService.OpenReference(te.Reference, te.Name);
+        });
 
         _ = LoadCategoriesAsync();
     }
@@ -67,7 +73,8 @@ public class TraitsViewModel : ReactiveObject
     private async Task SearchAsync()
     {
         var effectiveQuery = SearchSynonyms.Expand(SearchQuery);
-        var results = await _repo.SearchTraitsAsync(effectiveQuery, SelectedCategory, MaxAbsCost);
+        var category = SelectedCategory == "Tudo" ? null : SelectedCategory;
+        var results = await _repo.SearchTraitsAsync(effectiveQuery, category, MaxAbsCost);
         var filtered = _isDisadvantage
             ? results.Where(t => t.BasePoints < 0)
             : results.Where(t => t.BasePoints >= 0);
@@ -77,7 +84,10 @@ public class TraitsViewModel : ReactiveObject
     private async Task LoadCategoriesAsync()
     {
         var cats = await _repo.GetTraitCategoriesAsync();
-        Categories = new ObservableCollection<string>(cats);
+        var list = new List<string> { "Tudo" };
+        list.AddRange(cats);
+        Categories = new ObservableCollection<string>(list);
+        SelectedCategory = "Tudo";
     }
 
     private Task AddSelectedAsync()
@@ -85,7 +95,7 @@ public class TraitsViewModel : ReactiveObject
         if (SelectedLibraryTrait is null) return Task.CompletedTask;
 
         var trait   = SelectedLibraryTrait;
-        var entry   = new TraitEntry(trait.GcsId, trait.Name, trait.BasePoints);
+        var entry   = new TraitEntry(trait.GcsId, trait.Name, trait.BasePoints, trait.Reference);
         var d       = _wizard.Draft;
         var newList = _isDisadvantage
             ? new List<TraitEntry>(d.Disadvantages) { entry }

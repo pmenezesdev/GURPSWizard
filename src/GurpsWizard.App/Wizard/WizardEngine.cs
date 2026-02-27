@@ -53,4 +53,15 @@ public class WizardEngine
             await CurrentStep.OnEnterAsync(draft);
         }
     }
+
+    /// <summary>
+    /// Pula diretamente para uma etapa específica.
+    /// </summary>
+    public void JumpTo(int index)
+    {
+        if (index >= 0 && index < _steps.Count)
+        {
+            _currentIndex = index;
+        }
+    }
 }

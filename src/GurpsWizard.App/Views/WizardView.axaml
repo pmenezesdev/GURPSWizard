@@ -91,36 +91,45 @@
           <ItemsControl ItemsSource="{Binding SidebarSteps}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Border Classes="StepItem"
-                        Classes.StepItemCurrent="{Binding IsCurrent}">
-                  <Grid ColumnDefinitions="22,*">
+                <Button Classes="IconButton" 
+                        HorizontalAlignment="Stretch" 
+                        Padding="0"
+                        Command="{Binding $parent[UserControl].DataContext.JumpToStepCommand}"
+                        CommandParameter="{Binding Index}">
+                  <Border Classes="StepItem"
+                          Classes.StepItemCurrent="{Binding IsCurrent}"
+                          Background="Transparent"
+                          HorizontalAlignment="Stretch">
+                    <Grid ColumnDefinitions="22,*">
 
-                    <!-- Indicador: ✓ concluído | ● atual | número pendente -->
-                    <TextBlock Grid.Column="0"
-                               Text="✓"
-                               Classes="StepIndexDone"
-                               IsVisible="{Binding IsCompleted}"
-                               FontWeight="Bold"
-                               VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="0"
-                               Text="●"
-                               IsVisible="{Binding IsCurrent}"
-                               Foreground="{DynamicResource AccentColor}"
-                               FontSize="8"
-                               VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding Index, StringFormat='{}{0}'}"
-                               Classes="StepIndexPending"
-                               IsVisible="{Binding IsPending}"
-                               VerticalAlignment="Center"
-                               FontSize="11"/>
+                      <!-- Indicador: ✓ concluído | ● atual | número pendente -->
+                      <TextBlock Grid.Column="0"
+                                 Text="✓"
+                                 Classes="StepIndexDone"
+                                 IsVisible="{Binding IsCompleted}"
+                                 FontWeight="Bold"
+                                 VerticalAlignment="Center"/>
+                      <TextBlock Grid.Column="0"
+                                 Text="●"
+                                 IsVisible="{Binding IsCurrent}"
+                                 Foreground="{DynamicResource AccentColor}"
+                                 FontSize="8"
+                                 VerticalAlignment="Center"/>
+                      <TextBlock Grid.Column="0"
+                                 Text="{Binding Index, StringFormat='{}{0}'}"
+                                 Classes="StepIndexPending"
+                                 IsVisible="{Binding IsPending}"
+                                 VerticalAlignment="Center"
+                                 FontSize="11"/>
 
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding Title}"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center"/>
-                  </Grid>
-                </Border>
+                      <TextBlock Grid.Column="1"
+                                 Text="{Binding Title}"
+                                 TextWrapping="Wrap"
+                                 VerticalAlignment="Center"
+                                 FontSize="13"/>
+                    </Grid>
+                  </Border>
+                </Button>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>

@@ -33,6 +33,7 @@ public class SkillsViewModel : ReactiveObject
 
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> AddCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> RemoveSelectedCommand { get; }
+    public ReactiveCommand<object, System.Reactive.Unit> OpenReferenceCommand { get; }
 
     public SkillsViewModel(WizardViewModel wizard, ILibraryRepository repo)
     {
@@ -64,6 +65,11 @@ public class SkillsViewModel : ReactiveObject
 
         AddCommand           = ReactiveCommand.CreateFromTask(AddSelectedAsync, canAdd);
         RemoveSelectedCommand = ReactiveCommand.Create(RemoveSelected, canRemove);
+        OpenReferenceCommand = ReactiveCommand.Create<object>(param =>
+        {
+            if (param is LibrarySkill ls) PdfService.OpenReference(ls.Reference, ls.DisplayName);
+            else if (param is SkillEntry se) PdfService.OpenReference(se.Reference, se.Name);
+        });
 
         _ = LoadCategoriesAsync();
     }
@@ -71,13 +77,17 @@ public class SkillsViewModel : ReactiveObject
     private async Task LoadCategoriesAsync()
     {
         var cats = await _repo.GetSkillCategoriesAsync();
-        Categories = new ObservableCollection<string>(cats);
+        var list = new List<string> { "Tudo" };
+        list.AddRange(cats);
+        Categories = new ObservableCollection<string>(list);
+        SelectedCategory = "Tudo";
     }
 
     private async Task SearchAsync()
     {
         var effectiveQuery = SearchSynonyms.Expand(SearchQuery);
-        var results = await _repo.SearchSkillsAsync(effectiveQuery, SelectedAttribute, SelectedDifficulty, SelectedCategory);
+        var category = SelectedCategory == "Tudo" ? null : SelectedCategory;
+        var results = await _repo.SearchSkillsAsync(effectiveQuery, SelectedAttribute, SelectedDifficulty, category);
         SearchResults = new ObservableCollection<LibrarySkill>(results);
     }
 
@@ -88,7 +98,7 @@ public class SkillsViewModel : ReactiveObject
         var skill = SelectedLibrarySkill;
         var diff  = skill.Difficulty;
         var cost  = PointCalculator.SkillCostFromDifficulty(diff, RelativeLevel);
-        var entry = new SkillEntry(skill.GcsId, skill.DisplayName, skill.BaseAttribute, diff, RelativeLevel, cost);
+        var entry = new SkillEntry(skill.GcsId, skill.DisplayName, skill.BaseAttribute, diff, RelativeLevel, cost, skill.Reference);
         var newList = new List<SkillEntry>(_wizard.Draft.Skills) { entry };
 
         _wizard.Draft = _wizard.Draft with { Skills = newList };

@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels"
+             x:Class="GurpsWizard.App.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+  <Grid RowDefinitions="Auto,*,Auto" Margin="40">
+    
+    <TextBlock Grid.Row="0" Text="Configurações" FontSize="28" FontWeight="Bold" 
+               Foreground="{DynamicResource AccentColor}" Margin="0,0,0,30"/>
+
+    <ScrollViewer Grid.Row="1">
+      <StackPanel Spacing="20" MaxWidth="600" HorizontalAlignment="Left">
+        
+        <!-- Caminho dos Livros -->
+        <StackPanel Spacing="8">
+          <TextBlock Text="Caminho da pasta de livros (PDFs)" Classes="FieldLabel"/>
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBox Grid.Column="0" Text="{Binding BooksPath}" Watermark="Ex: C:\RPG\GURPS\Livros" HorizontalAlignment="Stretch" Margin="0,0,8,0"/>
+            <Button Grid.Column="1" Content="Procurar..." Command="{Binding BrowseFolderCommand}"/>
+          </Grid>
+          <TextBlock Text="Se vazio, o app usará a pasta 'data/livros' padrão." FontSize="11" Opacity="0.5"/>
+        </StackPanel>
+
+        <Separator Height="1" Background="{DynamicResource DividerColor}" Margin="0,10"/>
+
+        <!-- Offsets -->
+        <TextBlock Text="Ajuste de Páginas (Offsets)" FontWeight="SemiBold" FontSize="16" Foreground="{DynamicResource AccentColor}"/>
+        <TextBlock Text="Ajuste para compensar capas e sumários. Se o app abre 2 páginas à frente, use -2." FontSize="12" Opacity="0.7"/>
+
+        <Grid ColumnDefinitions="*,100" RowDefinitions="Auto,Auto,Auto" Margin="0,10,0,0">
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Módulo Básico (Basic Set.pdf)" VerticalAlignment="Center"/>
+          <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding BasicSetOffset}" Margin="0,4"/>
+
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="GURPS Magia.pdf" VerticalAlignment="Center"/>
+          <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MagiaOffset}" Margin="0,4"/>
+
+          <TextBlock Grid.Row="2" Grid.Column="0" Text="Delux.pdf" VerticalAlignment="Center"/>
+          <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding DeluxOffset}" Margin="0,4"/>
+        </Grid>
+
+        <Separator Height="1" Background="{DynamicResource DividerColor}" Margin="0,10"/>
+
+        <!-- Logs -->
+        <TextBlock Text="Diagnóstico e Depuração" FontWeight="SemiBold" FontSize="16" Foreground="{DynamicResource AccentColor}"/>
+        <StackPanel Spacing="12">
+          <CheckBox IsChecked="{Binding EnableLogging}" Content="Habilitar gravação de logs de sessão (.txt)"/>
+          <Button Content="Abrir pasta de logs" Command="{Binding OpenLogsFolderCommand}" FontSize="12" IsVisible="{Binding EnableLogging}"/>
+          <TextBlock Text="Os logs ajudam a identificar por que um PDF não abre ou por que caminhos não são encontrados." FontSize="11" Opacity="0.5" TextWrapping="Wrap"/>
+        </StackPanel>
+
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- Botões -->
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="16" HorizontalAlignment="Right" Margin="0,30,0,0">
+      <Button Content="Cancelar" Command="{Binding CancelCommand}" Width="120"/>
+      <Button Content="Salvar" Command="{Binding SaveCommand}" Classes="AccentButton" Width="120"/>
+    </StackPanel>
+
+  </Grid>
+</UserControl>

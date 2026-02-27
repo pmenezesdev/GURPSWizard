@@ -11,6 +11,7 @@ public class HomeViewModel : ReactiveObject
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> NewCharacterCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ListCharactersCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ToggleThemeCommand { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ShowSettingsCommand { get; }
 
     public HomeViewModel(MainViewModel main)
     {
@@ -19,5 +20,6 @@ public class HomeViewModel : ReactiveObject
         NewCharacterCommand   = ReactiveCommand.Create(main.StartNewCharacter);
         ListCharactersCommand = ReactiveCommand.Create(main.ShowCharacterList);
         ToggleThemeCommand    = ReactiveCommand.Create(ThemeService.Instance.Toggle);
+        ShowSettingsCommand   = ReactiveCommand.Create(main.ShowSettings);
     }
 }

@@ -11,5 +11,6 @@ public record SkillEntry(
     string BaseAttr,
     string Difficulty,
     int Level,
-    int Cost
+    int Cost,
+    string? Reference = null
 );

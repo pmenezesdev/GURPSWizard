@@ -6,5 +6,6 @@ public record EquipmentEntry(
     string Name,
     decimal Value,
     string Weight,
-    int Quantity = 1
+    int Quantity = 1,
+    string? Reference = null
 );

@@ -53,6 +53,7 @@ public class WizardViewModel : ReactiveObject
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> BackCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ExitCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ToggleThemeCommand { get; }
+    public ReactiveCommand<int, System.Reactive.Unit> JumpToStepCommand { get; }
 
     public WizardViewModel(WizardEngine engine, ILibraryRepository libraryRepository,
         ICharacterRepository characterRepository, MainViewModel main, CharacterDraft? initialDraft = null, int? characterId = null)
@@ -108,6 +109,16 @@ public class WizardViewModel : ReactiveObject
         BackCommand         = ReactiveCommand.CreateFromTask(ExecuteBackAsync, canBack);
         ExitCommand         = ReactiveCommand.Create(main.ShowHome);
         ToggleThemeCommand  = ReactiveCommand.Create(ThemeService.Instance.Toggle);
+        
+        JumpToStepCommand   = ReactiveCommand.Create<int>(index =>
+        {
+            if (index >= 0 && index < _engine.TotalSteps)
+            {
+                _engine.JumpTo(index);
+                CurrentStep = _engine.CurrentStep;
+                UpdateState();
+            }
+        });
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

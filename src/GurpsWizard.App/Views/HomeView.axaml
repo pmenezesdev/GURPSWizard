@@ -6,15 +6,23 @@
 
   <Grid RowDefinitions="Auto,*,Auto,Auto,*,Auto">
 
-    <!-- Botão de tema (canto superior direito) -->
-    <Button Grid.Row="0" Command="{Binding ToggleThemeCommand}"
-            HorizontalAlignment="Right" Margin="0,8,8,0"
-            Classes="IconButton" ToolTip.Tip="Alternar tema">
-      <Panel>
-        <TextBlock Text="Claro"  IsVisible="{Binding Theme.IsDark}"  FontSize="12"/>
-        <TextBlock Text="Escuro" IsVisible="{Binding !Theme.IsDark}" FontSize="12"/>
-      </Panel>
-    </Button>
+    <!-- Barra de Ferramentas Superior -->
+    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="8">
+      <!-- Configurações (Esquerda) -->
+      <Button Grid.Column="0" Command="{Binding ShowSettingsCommand}"
+              Classes="IconButton" ToolTip.Tip="Configurações">
+        <TextBlock Text="⚙" FontSize="20" Opacity="0.7"/>
+      </Button>
+
+      <!-- Botão de tema (Direita) -->
+      <Button Grid.Column="2" Command="{Binding ToggleThemeCommand}"
+              Classes="IconButton" ToolTip.Tip="Alternar tema">
+        <Panel>
+          <TextBlock Text="Claro"  IsVisible="{Binding Theme.IsDark}"  FontSize="12"/>
+          <TextBlock Text="Escuro" IsVisible="{Binding !Theme.IsDark}" FontSize="12"/>
+        </Panel>
+      </Button>
+    </Grid>
 
     <!-- Logo/Título -->
     <StackPanel Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"
