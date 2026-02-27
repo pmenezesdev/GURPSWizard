@@ -6,93 +6,111 @@ namespace GurpsWizard.Data;
 /// <summary>
 /// Verifica se o banco SQLite existe e está populado.
 /// Na primeira execução, aplica as migrations e carrega todos os dados GCS.
+/// Nas execuções subsequentes, carrega apenas as tabelas ainda vazias
+/// (permite recuperação de carga parcial sem apagar personagens salvos).
 /// </summary>
 public class DatabaseInitializer(AppDbContext db, GcsLoader loader)
 {
     /// <summary>
-    /// Inicializa o banco. Retorna true se os dados foram carregados agora (primeira execução).
+    /// Inicializa o banco. Retorna true se alguma dado foi carregado agora.
     /// <paramref name="gcsDataPath"/> deve apontar para o diretório raiz de gcs-ptbr.
-    /// <paramref name="progress"/> recebe mensagens de status durante a carga (opcional).
     /// </summary>
     public async Task<bool> InitializeAsync(string gcsDataPath, IProgress<string>? progress = null)
     {
         progress?.Report("Aplicando migrações do banco de dados…");
         await db.Database.MigrateAsync();
 
-        if (await db.LibraryTraits.AnyAsync())
+        bool anyLoaded = false;
+
+        if (!await db.LibraryTraits.AnyAsync())
         {
-            progress?.Report("Biblioteca já carregada.");
-            return false;
+            await LoadTraitsAsync(gcsDataPath, progress);
+            anyLoaded = true;
         }
 
-        await LoadLibraryAsync(gcsDataPath, progress);
-        return true;
+        if (!await db.LibrarySkills.AnyAsync())
+        {
+            await LoadSkillsAsync(gcsDataPath, progress);
+            anyLoaded = true;
+        }
+
+        if (!await db.LibraryEquipment.AnyAsync())
+        {
+            await LoadEquipmentAsync(gcsDataPath, progress);
+            anyLoaded = true;
+        }
+
+        if (!anyLoaded)
+            progress?.Report("Biblioteca já carregada.");
+        else
+            progress?.Report("Biblioteca pronta!");
+
+        return anyLoaded;
     }
 
-    private async Task LoadLibraryAsync(string basePath, IProgress<string>? progress)
+    // ── Vantagens e desvantagens (.adq) ───────────────────────────────────────
+
+    private async Task LoadTraitsAsync(string basePath, IProgress<string>? progress)
     {
-        // ── Vantagens e desvantagens (.adq) ───────────────────────────────────
-        // Carrega todos os arquivos, deduplica por GcsId em memória,
-        // depois insere apenas os que ainda não existem no banco.
         var adqFiles = Directory.GetFiles(basePath, "*.adq", SearchOption.AllDirectories);
 
-        var allTraits = new Dictionary<string, Entities.LibraryTrait>(StringComparer.Ordinal);
+        var all = new Dictionary<string, Entities.LibraryTrait>(StringComparer.Ordinal);
         foreach (var file in adqFiles)
         {
             progress?.Report($"Lendo vantagens: {Path.GetFileName(file)}…");
             foreach (var t in await loader.LoadTraitsAsync(file))
-                allTraits.TryAdd(t.GcsId, t);
+                all.TryAdd(t.GcsId, t);
         }
 
-        var existingTraitIds = await db.LibraryTraits
-            .Select(t => t.GcsId).ToHashSetAsync();
-
-        foreach (var t in allTraits.Values.Where(t => !existingTraitIds.Contains(t.GcsId)))
+        var existing = await db.LibraryTraits.Select(t => t.GcsId).ToHashSetAsync();
+        foreach (var t in all.Values.Where(t => !existing.Contains(t.GcsId)))
             db.LibraryTraits.Add(t);
 
-        progress?.Report($"Vantagens e desvantagens: {allTraits.Count} itens. Salvando…");
+        progress?.Report($"Vantagens e desvantagens: {all.Count} itens. Salvando…");
         await db.SaveChangesAsync();
+    }
 
-        // ── Perícias (.skl) ───────────────────────────────────────────────────
+    // ── Perícias (.skl) ───────────────────────────────────────────────────────
+
+    private async Task LoadSkillsAsync(string basePath, IProgress<string>? progress)
+    {
         var sklFiles = Directory.GetFiles(basePath, "*.skl", SearchOption.AllDirectories);
 
-        var allSkills = new Dictionary<string, Entities.LibrarySkill>(StringComparer.Ordinal);
+        var all = new Dictionary<string, Entities.LibrarySkill>(StringComparer.Ordinal);
         foreach (var file in sklFiles)
         {
             progress?.Report($"Lendo perícias: {Path.GetFileName(file)}…");
             foreach (var s in await loader.LoadSkillsAsync(file))
-                allSkills.TryAdd(s.GcsId, s);
+                all.TryAdd(s.GcsId, s);
         }
 
-        var existingSkillIds = await db.LibrarySkills
-            .Select(s => s.GcsId).ToHashSetAsync();
-
-        foreach (var s in allSkills.Values.Where(s => !existingSkillIds.Contains(s.GcsId)))
+        var existing = await db.LibrarySkills.Select(s => s.GcsId).ToHashSetAsync();
+        foreach (var s in all.Values.Where(s => !existing.Contains(s.GcsId)))
             db.LibrarySkills.Add(s);
 
-        progress?.Report($"Perícias: {allSkills.Count} itens. Salvando…");
+        progress?.Report($"Perícias: {all.Count} itens. Salvando…");
         await db.SaveChangesAsync();
+    }
 
-        // ── Equipamentos (.eqp) ───────────────────────────────────────────────
+    // ── Equipamentos (.eqp) ───────────────────────────────────────────────────
+
+    private async Task LoadEquipmentAsync(string basePath, IProgress<string>? progress)
+    {
         var eqpFiles = Directory.GetFiles(basePath, "*.eqp", SearchOption.AllDirectories);
 
-        var allEquipment = new Dictionary<string, Entities.LibraryEquipment>(StringComparer.Ordinal);
+        var all = new Dictionary<string, Entities.LibraryEquipment>(StringComparer.Ordinal);
         foreach (var file in eqpFiles)
         {
             progress?.Report($"Lendo equipamentos: {Path.GetFileName(file)}…");
             foreach (var e in await loader.LoadEquipmentAsync(file))
-                allEquipment.TryAdd(e.GcsId, e);
+                all.TryAdd(e.GcsId, e);
         }
 
-        var existingEqpIds = await db.LibraryEquipment
-            .Select(e => e.GcsId).ToHashSetAsync();
-
-        foreach (var e in allEquipment.Values.Where(e => !existingEqpIds.Contains(e.GcsId)))
+        var existing = await db.LibraryEquipment.Select(e => e.GcsId).ToHashSetAsync();
+        foreach (var e in all.Values.Where(e => !existing.Contains(e.GcsId)))
             db.LibraryEquipment.Add(e);
 
-        progress?.Report($"Equipamentos: {allEquipment.Count} itens. Salvando…");
+        progress?.Report($"Equipamentos: {all.Count} itens. Salvando…");
         await db.SaveChangesAsync();
-
-        progress?.Report("Biblioteca pronta!");
     }
 }

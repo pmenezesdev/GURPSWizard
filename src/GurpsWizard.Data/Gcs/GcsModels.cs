@@ -1,6 +1,22 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace GurpsWizard.Data.Gcs;
+
+/// <summary>
+/// Aceita tanto número (20) quanto string ("20") no JSON para campos decimal.
+/// Necessário para arquivos v2 (GURPS Magia) que serializam value como string.
+/// </summary>
+internal sealed class StringOrNumberDecimalConverter : JsonConverter<decimal>
+{
+    public override decimal Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        => reader.TokenType == JsonTokenType.String
+            ? decimal.Parse(reader.GetString()!, System.Globalization.CultureInfo.InvariantCulture)
+            : reader.GetDecimal();
+
+    public override void Write(Utf8JsonWriter writer, decimal value, JsonSerializerOptions options)
+        => writer.WriteNumberValue(value);
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Raiz genérica (suporta v5 sem type/id e v2 com type/id)
@@ -101,6 +117,7 @@ public class GcsEquipmentRow
     public string Description { get; set; } = "";
 
     [JsonPropertyName("value")]
+    [JsonConverter(typeof(StringOrNumberDecimalConverter))]
     public decimal Value { get; set; }
 
     [JsonPropertyName("weight")]
