@@ -4,18 +4,26 @@
 
   <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,8,300">
 
-    <!-- Coluna esquerda: busca + resultados -->
-    <Grid Grid.Column="0" Grid.Row="0" RowDefinitions="Auto,*,Auto">
+    <!-- Coluna esquerda: busca + filtros + resultados -->
+    <Grid Grid.Column="0" Grid.Row="0" RowDefinitions="Auto,Auto,*,Auto">
 
       <TextBox Grid.Row="0" Text="{Binding SearchQuery}"
-               Watermark="Buscar equipamento..." Margin="0,0,0,6"/>
+               Watermark="Buscar equipamento..." Margin="0,0,0,4"/>
 
-      <ListBox Grid.Row="1"
+      <!-- Filtro de categoria -->
+      <ComboBox Grid.Row="1"
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding SelectedCategory}"
+                PlaceholderText="Todas as categorias"
+                HorizontalAlignment="Stretch"
+                Margin="0,0,0,6"/>
+
+      <ListBox Grid.Row="2" x:Name="SearchResultsList"
                ItemsSource="{Binding SearchResults}"
                SelectedItem="{Binding SelectedLibraryEquipment}">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid ColumnDefinitions="*,70,70">
+            <Grid ColumnDefinitions="*,70,70" ToolTip.Tip="{Binding Notes}">
               <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
               <TextBlock Grid.Column="1" Text="{Binding Value, StringFormat='$ {0:N2}'}"
                          HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
@@ -26,15 +34,15 @@
         </ListBox.ItemTemplate>
       </ListBox>
 
-      <Button Grid.Row="2" Content="Adicionar →"
+      <Button Grid.Row="3" Content="Adicionar →"
               Command="{Binding AddCommand}"
               HorizontalAlignment="Right" Margin="0,6,0,0"/>
     </Grid>
 
-    <Rectangle Grid.Column="1" Grid.Row="0" Fill="#44FFFFFF"/>
+    <Rectangle Grid.Column="1" Grid.Row="0" Fill="{DynamicResource ColumnDividerColor}"/>
 
     <!-- Coluna direita: equipamentos selecionados -->
-    <Grid Grid.Column="2" Grid.Row="0" RowDefinitions="Auto,*,Auto">
+    <Grid Grid.Column="2" Grid.Row="0" RowDefinitions="Auto,*,Auto" x:Name="AddedPanel">
       <TextBlock Grid.Row="0" Text="Equipamento selecionado" FontWeight="SemiBold" Margin="0,0,0,6"/>
 
       <ListBox Grid.Row="1"
@@ -58,7 +66,7 @@
 
     <!-- Rodapé de totais -->
     <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
-            Background="#22FFFFFF" CornerRadius="4" Margin="0,8,0,0" Padding="12,6">
+            Background="{DynamicResource SubtleSurface}" CornerRadius="4" Margin="0,8,0,0" Padding="12,6">
       <StackPanel Orientation="Horizontal" Spacing="24">
         <TextBlock>
           <Run Text="Custo total: "/>

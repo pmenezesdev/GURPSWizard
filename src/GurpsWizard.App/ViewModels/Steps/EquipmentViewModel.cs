@@ -14,6 +14,8 @@ public class EquipmentViewModel : ReactiveObject
     private readonly ILibraryRepository _repo;
 
     [Reactive] public string SearchQuery { get; set; } = "";
+    [Reactive] public string? SelectedCategory { get; set; }
+    [Reactive] public ObservableCollection<string> Categories { get; private set; } = [];
     [Reactive] public ObservableCollection<LibraryEquipment> SearchResults { get; private set; } = [];
     [Reactive] public LibraryEquipment? SelectedLibraryEquipment { get; set; }
     [Reactive] public ObservableCollection<EquipmentEntry> AddedEquipment { get; private set; } = [];
@@ -37,10 +39,12 @@ public class EquipmentViewModel : ReactiveObject
                   RecalcTotals(d.Equipment);
               });
 
-        this.WhenAnyValue(x => x.SearchQuery)
+        this.WhenAnyValue(x => x.SearchQuery, x => x.SelectedCategory)
             .Throttle(TimeSpan.FromMilliseconds(250))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(async _ => await SearchAsync());
+
+        _ = LoadCategoriesAsync();
 
         var canAdd    = this.WhenAnyValue(x => x.SelectedLibraryEquipment).Select(e => e is not null);
         var canRemove = this.WhenAnyValue(x => x.SelectedAddedEquipment)  .Select(e => e is not null);
@@ -49,9 +53,15 @@ public class EquipmentViewModel : ReactiveObject
         RemoveSelectedCommand = ReactiveCommand.Create(RemoveSelected, canRemove);
     }
 
+    private async Task LoadCategoriesAsync()
+    {
+        var cats = await _repo.GetEquipmentCategoriesAsync();
+        Categories = new ObservableCollection<string>(cats);
+    }
+
     private async Task SearchAsync()
     {
-        var results = await _repo.SearchEquipmentAsync(SearchQuery);
+        var results = await _repo.SearchEquipmentAsync(SearchQuery, SelectedCategory);
         SearchResults = new ObservableCollection<LibraryEquipment>(results);
     }
 
