@@ -20,6 +20,7 @@ public class TraitsViewModel : ReactiveObject
 
     [Reactive] public string SearchQuery { get; set; } = "";
     [Reactive] public string? SelectedCategory { get; set; }
+    [Reactive] public int? MaxAbsCost { get; set; }
     [Reactive] public ObservableCollection<string> Categories { get; private set; } = [];
     [Reactive] public ObservableCollection<LibraryTrait> SearchResults { get; private set; } = [];
     [Reactive] public LibraryTrait? SelectedLibraryTrait { get; set; }
@@ -43,9 +44,14 @@ public class TraitsViewModel : ReactiveObject
                   AddedTraits = new ObservableCollection<TraitEntry>(source);
               });
 
-        // Busca ao mudar query ou categoria
+        // Busca ao mudar query, categoria ou custo máximo
         this.WhenAnyValue(x => x.SearchQuery, x => x.SelectedCategory)
             .Throttle(TimeSpan.FromMilliseconds(250))
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(async _ => await SearchAsync());
+
+        this.WhenAnyValue(x => x.MaxAbsCost)
+            .Throttle(TimeSpan.FromMilliseconds(400))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(async _ => await SearchAsync());
 
@@ -60,7 +66,8 @@ public class TraitsViewModel : ReactiveObject
 
     private async Task SearchAsync()
     {
-        var results = await _repo.SearchTraitsAsync(SearchQuery, SelectedCategory);
+        var effectiveQuery = SearchSynonyms.Expand(SearchQuery);
+        var results = await _repo.SearchTraitsAsync(effectiveQuery, SelectedCategory, MaxAbsCost);
         var filtered = _isDisadvantage
             ? results.Where(t => t.BasePoints < 0)
             : results.Where(t => t.BasePoints >= 0);

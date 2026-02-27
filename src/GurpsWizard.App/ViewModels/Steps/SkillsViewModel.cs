@@ -15,6 +15,10 @@ public class SkillsViewModel : ReactiveObject
     private readonly ILibraryRepository _repo;
 
     [Reactive] public string SearchQuery { get; set; } = "";
+    [Reactive] public string? SelectedAttribute { get; set; }
+    [Reactive] public string? SelectedDifficulty { get; set; }
+    [Reactive] public string? SelectedCategory { get; set; }
+    [Reactive] public ObservableCollection<string> Categories { get; private set; } = [];
     [Reactive] public ObservableCollection<LibrarySkill> SearchResults { get; private set; } = [];
     [Reactive] public LibrarySkill? SelectedLibrarySkill { get; set; }
     [Reactive] public ObservableCollection<SkillEntry> AddedSkills { get; private set; } = [];
@@ -22,6 +26,10 @@ public class SkillsViewModel : ReactiveObject
 
     [Reactive] public int RelativeLevel { get; set; } = 0;
     [Reactive] public int PreviewCost { get; private set; } = 1;
+    [Reactive] public bool HasNoSkills { get; private set; } = true;
+
+    public IReadOnlyList<string?> Attributes { get; } = [null, "ST", "DX", "IQ", "HT"];
+    public IReadOnlyList<string?> Difficulties { get; } = [null, "E", "A", "H", "VH"];
 
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> AddCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> RemoveSelectedCommand { get; }
@@ -32,9 +40,13 @@ public class SkillsViewModel : ReactiveObject
         _repo   = repo;
 
         wizard.WhenAnyValue(x => x.Draft)
-              .Subscribe(d => AddedSkills = new ObservableCollection<SkillEntry>(d.Skills));
+              .Subscribe(d =>
+              {
+                  AddedSkills = new ObservableCollection<SkillEntry>(d.Skills);
+                  HasNoSkills = d.Skills.Count == 0;
+              });
 
-        this.WhenAnyValue(x => x.SearchQuery)
+        this.WhenAnyValue(x => x.SearchQuery, x => x.SelectedAttribute, x => x.SelectedDifficulty, x => x.SelectedCategory)
             .Throttle(TimeSpan.FromMilliseconds(250))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(async _ => await SearchAsync());
@@ -52,11 +64,20 @@ public class SkillsViewModel : ReactiveObject
 
         AddCommand           = ReactiveCommand.CreateFromTask(AddSelectedAsync, canAdd);
         RemoveSelectedCommand = ReactiveCommand.Create(RemoveSelected, canRemove);
+
+        _ = LoadCategoriesAsync();
+    }
+
+    private async Task LoadCategoriesAsync()
+    {
+        var cats = await _repo.GetSkillCategoriesAsync();
+        Categories = new ObservableCollection<string>(cats);
     }
 
     private async Task SearchAsync()
     {
-        var results = await _repo.SearchSkillsAsync(SearchQuery);
+        var effectiveQuery = SearchSynonyms.Expand(SearchQuery);
+        var results = await _repo.SearchSkillsAsync(effectiveQuery, SelectedAttribute, SelectedDifficulty, SelectedCategory);
         SearchResults = new ObservableCollection<LibrarySkill>(results);
     }
 
@@ -67,7 +88,7 @@ public class SkillsViewModel : ReactiveObject
         var skill = SelectedLibrarySkill;
         var diff  = skill.Difficulty;
         var cost  = PointCalculator.SkillCostFromDifficulty(diff, RelativeLevel);
-        var entry = new SkillEntry(skill.GcsId, skill.Name, skill.BaseAttribute, diff, RelativeLevel, cost);
+        var entry = new SkillEntry(skill.GcsId, skill.DisplayName, skill.BaseAttribute, diff, RelativeLevel, cost);
         var newList = new List<SkillEntry>(_wizard.Draft.Skills) { entry };
 
         _wizard.Draft = _wizard.Draft with { Skills = newList };
