@@ -12,6 +12,7 @@ public class ConceptViewModel : ReactiveObject
     [Reactive] public string Name { get; set; } = "";
     [Reactive] public string Description { get; set; } = "";
     [Reactive] public int TotalPoints { get; set; } = 100;
+    [Reactive] public bool HasNameError { get; private set; } = true;
 
     public ConceptViewModel(WizardViewModel wizard)
     {
@@ -27,6 +28,10 @@ public class ConceptViewModel : ReactiveObject
                   TotalPoints = d.TotalPoints;
                   _syncing    = false;
               });
+
+        // Mantém HasNameError sincronizado com o campo Name
+        this.WhenAnyValue(x => x.Name)
+            .Subscribe(n => HasNameError = string.IsNullOrWhiteSpace(n));
 
         // Propaga mudanças locais de volta ao Draft
         this.WhenAnyValue(x => x.Name)

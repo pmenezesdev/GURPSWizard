@@ -50,6 +50,23 @@ public class MainViewModel : ReactiveObject
         CurrentContent = new WizardViewModel(engine, _libraryRepo, _characterRepo, this);
     }
 
+    public void ImportDraft(CharacterDraft draft)
+    {
+        var engine = new WizardEngine(
+        [
+            new ConceptStep(),
+            new AttributesStep(),
+            new SecondaryStep(),
+            new AdvantagesStep(),
+            new DisadvantagesStep(),
+            new SkillsStep(),
+            new EquipmentStep(),
+            new ReviewStep(),
+        ]);
+
+        CurrentContent = new WizardViewModel(engine, _libraryRepo, _characterRepo, this, draft, characterId: null);
+    }
+
     public void LoadCharacter(CharacterEntity entity, CharacterDraft draft)
     {
         var engine = new WizardEngine(

@@ -9,7 +9,11 @@
     <TextBlock Text="Nome do Personagem" Classes="FieldLabel"/>
     <TextBox Text="{Binding Name}"
              Watermark="Ex.: Alaric von Thorn"
-             Classes="Field"/>
+             Classes="Field"
+             Classes.ValidationError="{Binding HasNameError}"/>
+    <TextBlock Text="O nome é obrigatório para avançar."
+               Classes="ValidationHint"
+               IsVisible="{Binding HasNameError}"/>
 
     <TextBlock Text="Descrição" Classes="FieldLabel"/>
     <TextBox Text="{Binding Description}"
@@ -24,7 +28,6 @@
                    Width="160" HorizontalAlignment="Left"
                    Classes="Field"/>
 
-    <TextBlock Text="* O nome é obrigatório para avançar." Opacity="0.6" FontSize="12"/>
 
   </StackPanel>
 </UserControl>

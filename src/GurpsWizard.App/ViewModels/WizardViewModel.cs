@@ -10,6 +10,11 @@ using ReactiveUI.Fody.Helpers;
 
 namespace GurpsWizard.App.ViewModels;
 
+public record SidebarStep(string Title, int Index, bool IsCompleted, bool IsCurrent)
+{
+    public bool IsPending => !IsCompleted && !IsCurrent;
+}
+
 /// <summary>
 /// ViewModel raiz do wizard. Gerencia o CharacterDraft, a navegação entre etapas
 /// e o cálculo de pontos.
@@ -35,12 +40,19 @@ public class WizardViewModel : ReactiveObject
     [Reactive] public bool CanGoBack { get; private set; }
     [Reactive] public bool CanGoNext { get; private set; }
     [Reactive] public double ProgressPercent { get; private set; }
+    [Reactive] public bool IsOverBudget { get; private set; }
+
+    // ── Sidebar steps com status ──────────────────────────────────────────────
+    [Reactive] public IReadOnlyList<SidebarStep> SidebarSteps { get; private set; } = [];
 
     public IReadOnlyList<IWizardStep> Steps => _engine.Steps;
+
+    public ThemeService Theme => ThemeService.Instance;
 
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> NextCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> BackCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ExitCommand { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ToggleThemeCommand { get; }
 
     public WizardViewModel(WizardEngine engine, ILibraryRepository libraryRepository,
         ICharacterRepository characterRepository, MainViewModel main, CharacterDraft? initialDraft = null, int? characterId = null)
@@ -74,8 +86,9 @@ public class WizardViewModel : ReactiveObject
         this.WhenAnyValue(x => x.Draft)
             .Subscribe(d =>
             {
-                Points   = PointCalculator.Calculate(d);
-                CanGoNext = CurrentStep.CanProceed(d);
+                Points       = PointCalculator.Calculate(d);
+                IsOverBudget = Points.Remaining < 0;
+                CanGoNext    = CurrentStep.CanProceed(d);
             });
 
         // Step mudou → atualizar CurrentStepViewModel e revalidar
@@ -91,9 +104,10 @@ public class WizardViewModel : ReactiveObject
         var canNext = this.WhenAnyValue(x => x.CanGoNext);
         var canBack = this.WhenAnyValue(x => x.CanGoBack);
 
-        NextCommand = ReactiveCommand.CreateFromTask(ExecuteNextAsync, canNext);
-        BackCommand = ReactiveCommand.CreateFromTask(ExecuteBackAsync, canBack);
-        ExitCommand = ReactiveCommand.Create(main.ShowHome);
+        NextCommand         = ReactiveCommand.CreateFromTask(ExecuteNextAsync, canNext);
+        BackCommand         = ReactiveCommand.CreateFromTask(ExecuteBackAsync, canBack);
+        ExitCommand         = ReactiveCommand.Create(main.ShowHome);
+        ToggleThemeCommand  = ReactiveCommand.Create(ThemeService.Instance.Toggle);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -104,6 +118,8 @@ public class WizardViewModel : ReactiveObject
         CanGoNext       = CurrentStep.CanProceed(Draft);
         ProgressPercent = (double)(_engine.CurrentIndex + 1) / _engine.TotalSteps * 100.0;
         StepIndex       = _engine.CurrentIndex;
+        SidebarSteps    = [.. _engine.Steps.Select((s, i) =>
+            new SidebarStep(s.Title, i, i < StepIndex, i == StepIndex))];
     }
 
     private async Task ExecuteNextAsync()

@@ -42,20 +42,38 @@
 
         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
           <TextBlock Text="GURPS Wizard" FontSize="18" FontWeight="Bold"
-                     Foreground="{StaticResource AccentColor}"/>
+                     Foreground="{DynamicResource AccentColor}"/>
           <TextBlock Text="·" Opacity="0.4" VerticalAlignment="Center"/>
           <TextBlock Text="{Binding Draft.Name, FallbackValue='Novo Personagem'}"
                      FontSize="15" VerticalAlignment="Center"/>
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-          <Border Classes="PointsBadge" Padding="14,6">
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+
+          <!-- Badge de pontos (animação suave ao mudar de estado) -->
+          <Border Padding="14,6"
+                  Classes="PointsBadge"
+                  Classes.PointsBadgeWarning="{Binding IsOverBudget}">
+            <Border.Transitions>
+              <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.3"/>
+              </Transitions>
+            </Border.Transitions>
             <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
               <TextBlock Text="{Binding Points.Spent}" FontWeight="Bold" FontSize="16"/>
               <TextBlock Text="/" Opacity="0.4"/>
               <TextBlock Text="{Binding Points.Total, StringFormat='{}{0} pts'}" Opacity="0.7"/>
             </StackPanel>
           </Border>
+
+          <!-- Toggle de tema -->
+          <Button Command="{Binding ToggleThemeCommand}"
+                  Classes="IconButton" ToolTip.Tip="Alternar tema">
+            <Panel>
+              <TextBlock Text="Claro"  IsVisible="{Binding Theme.IsDark}"  FontSize="12"/>
+              <TextBlock Text="Escuro" IsVisible="{Binding !Theme.IsDark}" FontSize="12"/>
+            </Panel>
+          </Button>
 
           <Button Content="Sair" Command="{Binding ExitCommand}"
                   Classes="DangerButton" Padding="12,6"/>
@@ -69,22 +87,47 @@
 
       <!-- Sidebar: etapas do wizard -->
       <Border Grid.Column="0" Classes="Sidebar">
-        <ScrollViewer>
-          <ListBox ItemsSource="{Binding Steps}"
-                   SelectedIndex="{Binding StepIndex, Mode=OneWay}"
-                   IsHitTestVisible="False"
-                   Background="Transparent">
-            <ListBox.ItemTemplate>
+        <ScrollViewer Padding="4,8">
+          <ItemsControl ItemsSource="{Binding SidebarSteps}">
+            <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <TextBlock Text="{Binding Title}"
-                           TextWrapping="Wrap" Padding="4,2"/>
+                <Border Classes="StepItem"
+                        Classes.StepItemCurrent="{Binding IsCurrent}">
+                  <Grid ColumnDefinitions="22,*">
+
+                    <!-- Indicador: ✓ concluído | ● atual | número pendente -->
+                    <TextBlock Grid.Column="0"
+                               Text="✓"
+                               Classes="StepIndexDone"
+                               IsVisible="{Binding IsCompleted}"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0"
+                               Text="●"
+                               IsVisible="{Binding IsCurrent}"
+                               Foreground="{DynamicResource AccentColor}"
+                               FontSize="8"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding Index, StringFormat='{}{0}'}"
+                               Classes="StepIndexPending"
+                               IsVisible="{Binding IsPending}"
+                               VerticalAlignment="Center"
+                               FontSize="11"/>
+
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding Title}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"/>
+                  </Grid>
+                </Border>
               </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
         </ScrollViewer>
       </Border>
 
-      <Rectangle Grid.Column="1" Fill="{StaticResource DividerColor}"/>
+      <Rectangle Grid.Column="1" Fill="{DynamicResource DividerColor}"/>
 
       <!-- Área de conteúdo -->
       <Grid Grid.Column="2" RowDefinitions="Auto,Auto,*">
@@ -100,13 +143,18 @@
         <ProgressBar Grid.Row="1"
                      Value="{Binding ProgressPercent}" Maximum="100"
                      Height="3" Margin="20,6,20,8"
-                     Foreground="{StaticResource AccentColor}"
-                     Background="{StaticResource DividerColor}"/>
+                     Foreground="{DynamicResource AccentColor}"
+                     Background="{DynamicResource DividerColor}"/>
 
-        <!-- View da etapa atual (roteada via DataTemplates) -->
-        <ContentControl Grid.Row="2"
-                        Content="{Binding CurrentStepViewModel}"
-                        Margin="20,0,20,12"/>
+        <!-- View da etapa atual (transição suave com CrossFade) -->
+        <TransitioningContentControl Grid.Row="2"
+                                     Content="{Binding CurrentStepViewModel}"
+                                     Margin="20,0,20,12">
+          <TransitioningContentControl.PageTransition>
+            <CrossFade Duration="0:0:0.2"/>
+          </TransitioningContentControl.PageTransition>
+        </TransitioningContentControl>
+
       </Grid>
 
     </Grid>
@@ -115,6 +163,7 @@
     <Border Grid.Row="2" Classes="Footer" Padding="16,10">
       <Grid ColumnDefinitions="*,Auto,Auto">
         <TextBlock Grid.Column="0" VerticalAlignment="Center" Opacity="0.5"
+                   Classes.PointsWarning="{Binding IsOverBudget}"
                    Text="{Binding Points.Remaining, StringFormat='Pontos restantes: {0}'}"/>
         <Button Grid.Column="1" Content="← Voltar"
                 Command="{Binding BackCommand}"

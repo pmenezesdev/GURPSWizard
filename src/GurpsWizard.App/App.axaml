@@ -4,17 +4,63 @@
              RequestedThemeVariant="Dark">
 
   <Application.Resources>
-    <SolidColorBrush x:Key="AccentColor"    Color="#F9E2AF"/>
-    <SolidColorBrush x:Key="DangerColor"    Color="#F38BA8"/>
-    <SolidColorBrush x:Key="SurfaceColor"   Color="#313244"/>
-    <SolidColorBrush x:Key="SidebarColor"   Color="#1E1E2E"/>
-    <SolidColorBrush x:Key="DividerColor"   Color="#45475A"/>
-    <SolidColorBrush x:Key="TopBarColor"    Color="#181825"/>
-    <SolidColorBrush x:Key="FooterColor"    Color="#181825"/>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+
+        <!-- ── Paleta Dark (Catppuccin Mocha) ──────────────────────────────── -->
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="AccentColor"             Color="#F9E2AF"/>
+          <SolidColorBrush x:Key="DangerColor"             Color="#F38BA8"/>
+          <SolidColorBrush x:Key="SurfaceColor"            Color="#313244"/>
+          <SolidColorBrush x:Key="SidebarColor"            Color="#1E1E2E"/>
+          <SolidColorBrush x:Key="DividerColor"            Color="#45475A"/>
+          <SolidColorBrush x:Key="TopBarColor"             Color="#181825"/>
+          <SolidColorBrush x:Key="FooterColor"             Color="#181825"/>
+          <SolidColorBrush x:Key="ColumnDividerColor"      Color="#44FFFFFF"/>
+          <SolidColorBrush x:Key="AccentButtonForeground"  Color="#1E1E2E"/>
+          <SolidColorBrush x:Key="OverlayColor"            Color="#22000000"/>
+          <SolidColorBrush x:Key="SubtleSurface"           Color="#22FFFFFF"/>
+        </ResourceDictionary>
+
+        <!-- ── Paleta Light (GURPS Parchment) ──────────────────────────────── -->
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="AccentColor"             Color="#7B5E22"/>
+          <SolidColorBrush x:Key="DangerColor"             Color="#C0392B"/>
+          <SolidColorBrush x:Key="SurfaceColor"            Color="#EDE6D3"/>
+          <SolidColorBrush x:Key="SidebarColor"            Color="#DDD4BE"/>
+          <SolidColorBrush x:Key="DividerColor"            Color="#B8A98A"/>
+          <SolidColorBrush x:Key="TopBarColor"             Color="#C9BFA6"/>
+          <SolidColorBrush x:Key="FooterColor"             Color="#C9BFA6"/>
+          <SolidColorBrush x:Key="ColumnDividerColor"      Color="#66000000"/>
+          <SolidColorBrush x:Key="AccentButtonForeground"  Color="#F5F0E8"/>
+          <SolidColorBrush x:Key="OverlayColor"            Color="#22000000"/>
+          <SolidColorBrush x:Key="SubtleSurface"           Color="#22000000"/>
+        </ResourceDictionary>
+
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
   </Application.Resources>
 
   <Application.Styles>
     <FluentTheme/>
+
+    <!-- ── Validações ────────────────────────────────────────────────────── -->
+    <Style Selector="TextBox.ValidationError">
+      <Setter Property="BorderBrush" Value="{DynamicResource DangerColor}"/>
+      <Setter Property="BorderThickness" Value="1.5"/>
+    </Style>
+
+    <Style Selector="TextBlock.ValidationHint">
+      <Setter Property="Foreground" Value="{DynamicResource DangerColor}"/>
+      <Setter Property="FontSize"   Value="12"/>
+    </Style>
+
+    <!-- ── Feedback de pontos ─────────────────────────────────────────────── -->
+    <Style Selector="TextBlock.PointsWarning">
+      <Setter Property="Foreground"  Value="{DynamicResource DangerColor}"/>
+      <Setter Property="Opacity"     Value="1"/>
+      <Setter Property="FontWeight"  Value="SemiBold"/>
+    </Style>
 
     <!-- ── Tipografia ─────────────────────────────────────────────────────── -->
     <Style Selector="TextBlock.FieldLabel">
@@ -24,14 +70,16 @@
     </Style>
 
     <Style Selector="TextBlock.SectionTitle">
-      <Setter Property="FontSize"   Value="14"/>
-      <Setter Property="FontWeight" Value="SemiBold"/>
-      <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+      <Setter Property="FontSize"      Value="14"/>
+      <Setter Property="FontWeight"    Value="SemiBold"/>
+      <Setter Property="Foreground"    Value="{DynamicResource AccentColor}"/>
+      <Setter Property="Margin"        Value="0,0,0,6"/>
+      <Setter Property="TextDecorations" Value="Underline"/>
     </Style>
 
     <Style Selector="TextBlock.CostLabel">
       <Setter Property="FontWeight" Value="SemiBold"/>
-      <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
     </Style>
 
     <Style Selector="TextBlock.ValueLabel">
@@ -53,15 +101,15 @@
 
     <!-- ── Botões ─────────────────────────────────────────────────────────── -->
     <Style Selector="Button.AccentButton">
-      <Setter Property="Background" Value="{StaticResource AccentColor}"/>
-      <Setter Property="Foreground" Value="#1E1E2E"/>
+      <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
       <Setter Property="CornerRadius" Value="4"/>
     </Style>
 
     <Style Selector="Button.DangerButton">
       <Setter Property="Background" Value="Transparent"/>
-      <Setter Property="Foreground" Value="{StaticResource DangerColor}"/>
+      <Setter Property="Foreground" Value="{DynamicResource DangerColor}"/>
       <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
 
@@ -70,27 +118,88 @@
       <Setter Property="CornerRadius" Value="4"/>
     </Style>
 
+    <Style Selector="Button.IconButton">
+      <Setter Property="Background"   Value="Transparent"/>
+      <Setter Property="BorderBrush"  Value="Transparent"/>
+      <Setter Property="Padding"      Value="8,4"/>
+      <Setter Property="FontSize"     Value="16"/>
+      <Setter Property="Cursor"       Value="Hand"/>
+    </Style>
+
     <!-- ── Layout ─────────────────────────────────────────────────────────── -->
     <Style Selector="Border.TopBar">
-      <Setter Property="Background" Value="{StaticResource TopBarColor}"/>
+      <Setter Property="Background" Value="{DynamicResource TopBarColor}"/>
     </Style>
 
     <Style Selector="Border.Footer">
-      <Setter Property="Background" Value="{StaticResource FooterColor}"/>
+      <Setter Property="Background" Value="{DynamicResource FooterColor}"/>
     </Style>
 
     <Style Selector="Border.Sidebar">
-      <Setter Property="Background" Value="{StaticResource SidebarColor}"/>
+      <Setter Property="Background" Value="{DynamicResource SidebarColor}"/>
     </Style>
 
     <Style Selector="Border.CardBorder">
-      <Setter Property="Background"    Value="{StaticResource SurfaceColor}"/>
+      <Setter Property="Background"    Value="{DynamicResource SurfaceColor}"/>
       <Setter Property="CornerRadius"  Value="6"/>
+      <Setter Property="BoxShadow"     Value="0 2 8 0 #28000000"/>
     </Style>
 
     <Style Selector="Border.PointsBadge">
-      <Setter Property="Background"   Value="{StaticResource SurfaceColor}"/>
+      <Setter Property="Background"   Value="{DynamicResource SurfaceColor}"/>
       <Setter Property="CornerRadius" Value="20"/>
+    </Style>
+
+    <Style Selector="Border.PointsBadgeWarning">
+      <Setter Property="Background"   Value="{DynamicResource DangerColor}"/>
+      <Setter Property="CornerRadius" Value="20"/>
+    </Style>
+
+    <Style Selector="Border.PointsBadgeWarning TextBlock">
+      <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <!-- ── Decoração GURPS ────────────────────────────────────────────────── -->
+    <!-- Separador ornamental: linha + ícone + linha -->
+    <Style Selector="Grid.GurpsRule Rectangle">
+      <Setter Property="Height"              Value="1"/>
+      <Setter Property="Fill"                Value="{DynamicResource AccentColor}"/>
+      <Setter Property="Opacity"             Value="0.45"/>
+      <Setter Property="VerticalAlignment"   Value="Center"/>
+    </Style>
+
+    <Style Selector="Grid.GurpsRule TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+      <Setter Property="Opacity"    Value="0.6"/>
+      <Setter Property="FontSize"   Value="13"/>
+      <Setter Property="Margin"     Value="8,0"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- ── Sidebar step indicators ───────────────────────────────────────── -->
+    <Style Selector="Border.StepItem">
+      <Setter Property="Padding"   Value="10,7"/>
+      <Setter Property="Margin"    Value="4,1"/>
+      <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <Style Selector="Border.StepItemCurrent">
+      <Setter Property="Background"       Value="{DynamicResource SurfaceColor}"/>
+      <Setter Property="BorderThickness"  Value="3,0,0,0"/>
+      <Setter Property="BorderBrush"      Value="{DynamicResource AccentColor}"/>
+    </Style>
+
+    <Style Selector="Border.StepItemCurrent TextBlock">
+      <Setter Property="Foreground"  Value="{DynamicResource AccentColor}"/>
+      <Setter Property="FontWeight"  Value="SemiBold"/>
+    </Style>
+
+    <Style Selector="TextBlock.StepIndexDone">
+      <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+    </Style>
+
+    <Style Selector="TextBlock.StepIndexPending">
+      <Setter Property="Opacity" Value="0.4"/>
     </Style>
 
   </Application.Styles>

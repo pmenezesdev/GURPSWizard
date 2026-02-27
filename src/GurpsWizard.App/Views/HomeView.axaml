@@ -4,35 +4,57 @@
              x:Class="GurpsWizard.App.Views.HomeView"
              x:DataType="vm:HomeViewModel">
 
-  <Grid RowDefinitions="*,Auto,*">
+  <Grid RowDefinitions="Auto,*,Auto,Auto,*,Auto">
+
+    <!-- Botão de tema (canto superior direito) -->
+    <Button Grid.Row="0" Command="{Binding ToggleThemeCommand}"
+            HorizontalAlignment="Right" Margin="0,8,8,0"
+            Classes="IconButton" ToolTip.Tip="Alternar tema">
+      <Panel>
+        <TextBlock Text="Claro"  IsVisible="{Binding Theme.IsDark}"  FontSize="12"/>
+        <TextBlock Text="Escuro" IsVisible="{Binding !Theme.IsDark}" FontSize="12"/>
+      </Panel>
+    </Button>
 
     <!-- Logo/Título -->
-    <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
-      <TextBlock Text="GURPS Wizard" FontSize="42" FontWeight="Bold"
-                 Foreground="{StaticResource AccentColor}" HorizontalAlignment="Center"/>
-      <TextBlock Text="Criação de personagens simplificada" FontSize="16" Opacity="0.6"
+    <StackPanel Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                Spacing="6" Margin="0,0,0,16">
+      <TextBlock Text="GURPS Wizard" FontSize="40" FontWeight="Bold"
+                 Foreground="{DynamicResource AccentColor}" HorizontalAlignment="Center"/>
+      <TextBlock Text="Criação de personagens simplificada" FontSize="15" Opacity="0.6"
                  HorizontalAlignment="Center"/>
+      <TextBlock Text="4ª Edição · Basic Set" FontSize="11" Opacity="0.4"
+                 HorizontalAlignment="Center" FontStyle="Italic"/>
     </StackPanel>
 
+    <!-- Separador ornamental GURPS -->
+    <Grid Grid.Row="2" Classes="GurpsRule" Width="260" HorizontalAlignment="Center"
+          ColumnDefinitions="*,Auto,*" Margin="0,0,0,20">
+      <Rectangle Grid.Column="0"/>
+      <TextBlock Grid.Column="1" Text="*"/>
+      <Rectangle Grid.Column="2"/>
+    </Grid>
+
     <!-- Botões principais -->
-    <StackPanel Grid.Row="1" Spacing="16" HorizontalAlignment="Center">
+    <StackPanel Grid.Row="3" Spacing="14" HorizontalAlignment="Center">
       <Button Content="Novo Personagem"
               Command="{Binding NewCharacterCommand}"
-              Width="240" Height="50"
+              Width="248" Height="52"
               FontSize="16"
               Classes="AccentButton"
               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 
       <Button Content="Personagens Salvos"
               Command="{Binding ListCharactersCommand}"
-              Width="240" Height="50"
-              FontSize="16"
+              Width="248" Height="52"
+              FontSize="15"
               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
     </StackPanel>
 
     <!-- Rodapé -->
-    <TextBlock Grid.Row="2" Text="v0.1 MVP" VerticalAlignment="Bottom" HorizontalAlignment="Center"
-               Opacity="0.3" Margin="0,0,0,16"/>
+    <TextBlock Grid.Row="5" Text="v0.1 MLP · GURPS Wizard" VerticalAlignment="Bottom"
+               HorizontalAlignment="Center"
+               Opacity="0.25" FontSize="11" Margin="0,0,0,14"/>
 
   </Grid>
 </UserControl>
