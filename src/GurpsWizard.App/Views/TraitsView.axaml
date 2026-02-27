@@ -10,18 +10,28 @@
       <TextBox Grid.Row="0" Text="{Binding SearchQuery}"
                Watermark="Buscar por nome..." Margin="0,0,0,6"/>
 
-      <ComboBox Grid.Row="1"
-                ItemsSource="{Binding Categories}"
-                SelectedItem="{Binding SelectedCategory}"
-                PlaceholderText="Todas as categorias"
-                HorizontalAlignment="Stretch" Margin="0,0,0,6"/>
+      <Grid Grid.Row="1" ColumnDefinitions="*,8,Auto,Auto" Margin="0,0,0,6">
+        <ComboBox Grid.Column="0"
+                  ItemsSource="{Binding Categories}"
+                  SelectedItem="{Binding SelectedCategory}"
+                  PlaceholderText="Todas as categorias"
+                  HorizontalAlignment="Stretch"/>
+        <TextBlock Grid.Column="2" Text="Max.:" VerticalAlignment="Center" Margin="0,0,4,0" Opacity="0.7" FontSize="12"/>
+        <NumericUpDown Grid.Column="3"
+                       Value="{Binding MaxAbsCost}"
+                       Minimum="1" Maximum="999"
+                       Width="80"
+                       ShowButtonSpinner="False"
+                       Watermark="pts"
+                       ToolTip.Tip="Custo máximo absoluto (pts)"/>
+      </Grid>
 
-      <ListBox Grid.Row="2"
+      <ListBox Grid.Row="2" x:Name="SearchResultsList"
                ItemsSource="{Binding SearchResults}"
                SelectedItem="{Binding SelectedLibraryTrait}">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid ColumnDefinitions="*,Auto">
+            <Grid ColumnDefinitions="*,Auto" ToolTip.Tip="{Binding Notes}">
               <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap"/>
               <TextBlock Grid.Column="1" Margin="8,0,0,0"
                          Text="{Binding BasePoints, StringFormat='{}{0} pts'}" Opacity="0.7"/>
@@ -35,10 +45,10 @@
               HorizontalAlignment="Right" Margin="0,6,0,0"/>
     </Grid>
 
-    <Rectangle Grid.Column="1" Fill="#44FFFFFF"/>
+    <Rectangle Grid.Column="1" Fill="{DynamicResource ColumnDividerColor}"/>
 
-    <!-- Coluna direita: itens adicionados -->
-    <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto">
+    <!-- Coluna direita: itens adicionados (drop target para drag & drop) -->
+    <Grid Grid.Column="2" x:Name="AddedPanel" RowDefinitions="Auto,*,Auto">
       <TextBlock Grid.Row="0" Text="Adicionados" FontWeight="SemiBold" Margin="0,0,0,6"/>
 
       <ListBox Grid.Row="1"
