@@ -19,6 +19,15 @@ public class LibrarySkill
     /// <summary>Especialização, quando presente (pode conter "@Especialização@" como placeholder).</summary>
     public string? Specialization { get; set; }
 
+    /// <summary>
+    /// Nome de exibição: inclui a especialização quando ela é um valor real
+    /// (ignora placeholders como "@Especialização@").
+    /// </summary>
+    public string DisplayName =>
+        string.IsNullOrEmpty(Specialization) || Specialization.Contains('@')
+            ? Name
+            : $"{Name} ({Specialization})";
+
     /// <summary>Categorias separadas por vírgula.</summary>
     public string Tags { get; set; } = "";
 
