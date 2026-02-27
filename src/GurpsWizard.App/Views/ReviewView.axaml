@@ -1,0 +1,150 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels.Steps"
+             x:Class="GurpsWizard.App.Views.ReviewView"
+             x:DataType="vm:ReviewViewModel">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+
+    <!-- Cabeçalho -->
+    <Border Grid.Row="0" Classes="CardBorder" Padding="16" Margin="0,0,0,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0">
+          <TextBlock Text="{Binding Draft.Name}" FontSize="20" FontWeight="Bold"/>
+          <TextBlock Text="{Binding Draft.Description}" Opacity="0.7" TextWrapping="Wrap"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" HorizontalAlignment="Right" Spacing="2">
+          <TextBlock Text="{Binding Points.Spent, StringFormat='Gasto: {0} pts'}" FontWeight="SemiBold"/>
+          <TextBlock Text="{Binding Points.Total, StringFormat='Total: {0} pts'}" Opacity="0.7"/>
+          <TextBlock Text="{Binding Points.Remaining, StringFormat='Restante: {0} pts'}"
+                     Foreground="{DynamicResource AccentColor}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Corpo da ficha em duas colunas -->
+    <ScrollViewer Grid.Row="1">
+      <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,Auto">
+
+        <!-- Coluna esquerda: Atributos + Vantagens + Desvantagens -->
+        <StackPanel Grid.Column="0" Spacing="12">
+
+          <!-- Atributos -->
+          <Border Classes="CardBorder" Padding="12">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Atributos" Classes="SectionTitle"/>
+              <Grid ColumnDefinitions="*,*,*,*">
+                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                  <TextBlock Text="ST" Classes="AttrLabel"/>
+                  <TextBlock Text="{Binding Draft.Attributes.ST}" Classes="AttrValue"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                  <TextBlock Text="DX" Classes="AttrLabel"/>
+                  <TextBlock Text="{Binding Draft.Attributes.DX}" Classes="AttrValue"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                  <TextBlock Text="IQ" Classes="AttrLabel"/>
+                  <TextBlock Text="{Binding Draft.Attributes.IQ}" Classes="AttrValue"/>
+                </StackPanel>
+                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                  <TextBlock Text="HT" Classes="AttrLabel"/>
+                  <TextBlock Text="{Binding Draft.Attributes.HT}" Classes="AttrValue"/>
+                </StackPanel>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <!-- Vantagens -->
+          <Border Classes="CardBorder" Padding="12">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Vantagens" Classes="SectionTitle"/>
+              <ItemsControl ItemsSource="{Binding Draft.Advantages}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="*,60">
+                      <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Cost, StringFormat='{}{0} pts'}"
+                                 HorizontalAlignment="Right" Opacity="0.7"/>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+          <!-- Desvantagens -->
+          <Border Classes="CardBorder" Padding="12">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Desvantagens" Classes="SectionTitle"/>
+              <ItemsControl ItemsSource="{Binding Draft.Disadvantages}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="*,60">
+                      <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Cost, StringFormat='{}{0} pts'}"
+                                 HorizontalAlignment="Right" Opacity="0.7"/>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+
+        <!-- Coluna direita: Perícias + Equipamento -->
+        <StackPanel Grid.Column="2" Spacing="12">
+
+          <!-- Perícias -->
+          <Border Classes="CardBorder" Padding="12">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Perícias" Classes="SectionTitle"/>
+              <ItemsControl ItemsSource="{Binding Draft.Skills}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="*,50,60">
+                      <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Level, StringFormat='{}{0:+#;-#;0}'}"
+                                 HorizontalAlignment="Center" Opacity="0.7"/>
+                      <TextBlock Grid.Column="2" Text="{Binding Cost, StringFormat='{}{0} pts'}"
+                                 HorizontalAlignment="Right" Opacity="0.7"/>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+          <!-- Equipamento -->
+          <Border Classes="CardBorder" Padding="12">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Equipamento" Classes="SectionTitle"/>
+              <ItemsControl ItemsSource="{Binding Draft.Equipment}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="*,80">
+                      <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Value, StringFormat='$ {0:N2}'}"
+                                 HorizontalAlignment="Right" Opacity="0.7"/>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+
+    <!-- Rodapé: status + botão salvar -->
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="16"
+                HorizontalAlignment="Right" Margin="0,12,0,0">
+      <TextBlock Text="{Binding SaveStatus}" VerticalAlignment="Center" Opacity="0.8"/>
+      <Button Content="Salvar Personagem"
+              Command="{Binding SaveCommand}"
+              Classes="AccentButton"/>
+    </StackPanel>
+
+  </Grid>
+</UserControl>

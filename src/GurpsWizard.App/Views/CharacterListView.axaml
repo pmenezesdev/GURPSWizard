@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels"
+             xmlns:entities="clr-namespace:GurpsWizard.Data.Entities;assembly=GurpsWizard.Data"
+             x:Class="GurpsWizard.App.Views.CharacterListView"
+             x:DataType="vm:CharacterListViewModel">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+
+    <!-- Cabeçalho -->
+    <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,20">
+      <Button Grid.Column="0" Content="← Voltar" Command="{Binding BackCommand}"/>
+      <TextBlock Grid.Column="1" Text="Personagens Salvos" FontSize="24" FontWeight="Bold"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                 Foreground="{StaticResource AccentColor}"/>
+    </Grid>
+
+    <!-- Lista de personagens -->
+    <Border Grid.Row="1" Classes="CardBorder" Padding="12">
+      <Grid>
+        <ListBox ItemsSource="{Binding Characters}"
+                 SelectedItem="{Binding SelectedCharacter}"
+                 Background="Transparent">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="entities:CharacterEntity">
+              <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,4">
+                <StackPanel Grid.Column="0">
+                  <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold"/>
+                  <TextBlock Text="{Binding CreatedAt, StringFormat='Criado em {0:dd/MM/yyyy}'}"
+                             FontSize="12" Opacity="0.5"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{Binding TotalPoints, StringFormat='{}{0} pts'}"
+                           VerticalAlignment="Center" Margin="0,0,24,0" Opacity="0.7"/>
+                <TextBlock Grid.Column="2" Text="{Binding UpdatedAt, StringFormat='Atualizado em {0:dd/MM/yyyy}'}"
+                           VerticalAlignment="Center" FontSize="12" Opacity="0.5"/>
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Loading overlay -->
+        <Border Background="#22000000" IsVisible="{Binding IsLoading}">
+          <ProgressBar IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200"/>
+        </Border>
+
+        <!-- Empty state -->
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8"
+                    IsVisible="{Binding !Characters.Count}">
+          <TextBlock Text="Nenhum personagem encontrado." HorizontalAlignment="Center" Opacity="0.5"/>
+          <Button Content="Criar meu primeiro personagem" Command="{Binding BackCommand}" HorizontalAlignment="Center"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Ações -->
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,20,0,0">
+      <Button Content="Excluir"
+              Command="{Binding DeleteSelectedCommand}"
+              Classes="DangerButton"
+              Foreground="{StaticResource DangerColor}"/>
+
+      <Button Content="Abrir Personagem"
+              Command="{Binding LoadSelectedCommand}"
+              Classes="AccentButton"
+              Padding="24,10"/>
+    </StackPanel>
+
+  </Grid>
+</UserControl>

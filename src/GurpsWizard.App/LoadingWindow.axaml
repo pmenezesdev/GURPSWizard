@@ -1,0 +1,40 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="GurpsWizard.App.LoadingWindow"
+        Width="440" Height="220"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        ShowInTaskbar="True"
+        Title="GURPS Wizard — Carregando"
+        SystemDecorations="BorderOnly"
+        Background="#1E1E2E">
+
+  <Border Padding="36,32">
+    <StackPanel Spacing="20" VerticalAlignment="Center">
+
+      <!-- Título -->
+      <TextBlock Text="GURPS Wizard"
+                 FontSize="26" FontWeight="Bold"
+                 Foreground="#F9E2AF"
+                 HorizontalAlignment="Center"/>
+
+      <!-- Mensagem de status -->
+      <TextBlock Text="{Binding StatusMessage}"
+                 FontSize="13"
+                 Foreground="#BAC2DE"
+                 TextWrapping="Wrap"
+                 TextAlignment="Center"
+                 HorizontalAlignment="Center"
+                 MaxWidth="360"/>
+
+      <!-- Barra de progresso animada -->
+      <ProgressBar IsIndeterminate="True"
+                   Height="5"
+                   CornerRadius="3"
+                   Foreground="#F9E2AF"
+                   Background="#313244"/>
+
+    </StackPanel>
+  </Border>
+
+</Window>

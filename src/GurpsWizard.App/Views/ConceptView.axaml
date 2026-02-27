@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels.Steps"
+             x:Class="GurpsWizard.App.Views.ConceptView"
+             x:DataType="vm:ConceptViewModel">
+
+  <StackPanel Spacing="16" MaxWidth="600" HorizontalAlignment="Left">
+
+    <TextBlock Text="Nome do Personagem" Classes="FieldLabel"/>
+    <TextBox Text="{Binding Name}"
+             Watermark="Ex.: Alaric von Thorn"
+             Classes="Field"/>
+
+    <TextBlock Text="Descrição" Classes="FieldLabel"/>
+    <TextBox Text="{Binding Description}"
+             Watermark="Aparência, histórico, motivação..."
+             AcceptsReturn="True"
+             MinHeight="100"
+             Classes="Field"/>
+
+    <TextBlock Text="Pontos da Campanha" Classes="FieldLabel"/>
+    <NumericUpDown Value="{Binding TotalPoints}"
+                   Minimum="25" Maximum="1000" Increment="25"
+                   Width="160" HorizontalAlignment="Left"
+                   Classes="Field"/>
+
+    <TextBlock Text="* O nome é obrigatório para avançar." Opacity="0.6" FontSize="12"/>
+
+  </StackPanel>
+</UserControl>

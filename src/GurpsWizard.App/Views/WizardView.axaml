@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels"
+             xmlns:vmSteps="clr-namespace:GurpsWizard.App.ViewModels.Steps"
+             xmlns:views="clr-namespace:GurpsWizard.App.Views"
+             x:Class="GurpsWizard.App.Views.WizardView"
+             x:DataType="vm:WizardViewModel">
+
+  <!-- Roteamento de ViewModels → Views (específico do Wizard) -->
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="{x:Type vmSteps:ConceptViewModel}">
+      <views:ConceptView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:AttributesViewModel}">
+      <views:AttributesView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:SecondaryViewModel}">
+      <views:SecondaryView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:AdvantagesViewModel}">
+      <views:TraitsView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:DisadvantagesViewModel}">
+      <views:TraitsView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:SkillsViewModel}">
+      <views:SkillsView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:EquipmentViewModel}">
+      <views:EquipmentView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:ReviewViewModel}">
+      <views:ReviewView/>
+    </DataTemplate>
+  </UserControl.DataTemplates>
+
+  <Grid RowDefinitions="Auto,*,Auto">
+
+    <!-- ── Barra superior ─────────────────────────────────────────────────── -->
+    <Border Grid.Row="0" Classes="TopBar" Padding="16,10">
+      <Grid ColumnDefinitions="*,Auto">
+
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+          <TextBlock Text="GURPS Wizard" FontSize="18" FontWeight="Bold"
+                     Foreground="{StaticResource AccentColor}"/>
+          <TextBlock Text="·" Opacity="0.4" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding Draft.Name, FallbackValue='Novo Personagem'}"
+                     FontSize="15" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+          <Border Classes="PointsBadge" Padding="14,6">
+            <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+              <TextBlock Text="{Binding Points.Spent}" FontWeight="Bold" FontSize="16"/>
+              <TextBlock Text="/" Opacity="0.4"/>
+              <TextBlock Text="{Binding Points.Total, StringFormat='{}{0} pts'}" Opacity="0.7"/>
+            </StackPanel>
+          </Border>
+
+          <Button Content="Sair" Command="{Binding ExitCommand}"
+                  Classes="DangerButton" Padding="12,6"/>
+        </StackPanel>
+
+      </Grid>
+    </Border>
+
+    <!-- ── Área principal ────────────────────────────────────────────────── -->
+    <Grid Grid.Row="1" ColumnDefinitions="190,1,*">
+
+      <!-- Sidebar: etapas do wizard -->
+      <Border Grid.Column="0" Classes="Sidebar">
+        <ScrollViewer>
+          <ListBox ItemsSource="{Binding Steps}"
+                   SelectedIndex="{Binding StepIndex, Mode=OneWay}"
+                   IsHitTestVisible="False"
+                   Background="Transparent">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Title}"
+                           TextWrapping="Wrap" Padding="4,2"/>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </ScrollViewer>
+      </Border>
+
+      <Rectangle Grid.Column="1" Fill="{StaticResource DividerColor}"/>
+
+      <!-- Área de conteúdo -->
+      <Grid Grid.Column="2" RowDefinitions="Auto,Auto,*">
+
+        <!-- Cabeçalho da etapa -->
+        <StackPanel Grid.Row="0" Margin="20,16,20,4">
+          <TextBlock Text="{Binding CurrentStep.Title}" FontSize="18" FontWeight="SemiBold"/>
+          <TextBlock Text="{Binding CurrentStep.Description}"
+                     Opacity="0.6" TextWrapping="Wrap" Margin="0,2,0,0"/>
+        </StackPanel>
+
+        <!-- Barra de progresso -->
+        <ProgressBar Grid.Row="1"
+                     Value="{Binding ProgressPercent}" Maximum="100"
+                     Height="3" Margin="20,6,20,8"
+                     Foreground="{StaticResource AccentColor}"
+                     Background="{StaticResource DividerColor}"/>
+
+        <!-- View da etapa atual (roteada via DataTemplates) -->
+        <ContentControl Grid.Row="2"
+                        Content="{Binding CurrentStepViewModel}"
+                        Margin="20,0,20,12"/>
+      </Grid>
+
+    </Grid>
+
+    <!-- ── Rodapé: navegação ─────────────────────────────────────────────── -->
+    <Border Grid.Row="2" Classes="Footer" Padding="16,10">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <TextBlock Grid.Column="0" VerticalAlignment="Center" Opacity="0.5"
+                   Text="{Binding Points.Remaining, StringFormat='Pontos restantes: {0}'}"/>
+        <Button Grid.Column="1" Content="← Voltar"
+                Command="{Binding BackCommand}"
+                Margin="0,0,8,0" Classes="NavButton"/>
+        <Button Grid.Column="2" Content="Próximo →"
+                Command="{Binding NextCommand}"
+                Classes="NavButton AccentButton"/>
+      </Grid>
+    </Border>
+
+  </Grid>
+</UserControl>

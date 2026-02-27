@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels.Steps"
+             x:Class="GurpsWizard.App.Views.AttributesView"
+             x:DataType="vm:AttributesViewModel">
+
+  <StackPanel Spacing="8" MaxWidth="420" HorizontalAlignment="Left">
+
+    <!-- ST -->
+    <Grid ColumnDefinitions="120,160,*">
+      <TextBlock Grid.Column="0" Text="Força (ST)" VerticalAlignment="Center" Classes="FieldLabel"/>
+      <NumericUpDown Grid.Column="1" Value="{Binding ST}"
+                     Minimum="1" Maximum="30" Increment="1" Classes="Field"/>
+      <TextBlock Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"
+                 Text="{Binding CostST, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
+    </Grid>
+
+    <!-- DX -->
+    <Grid ColumnDefinitions="120,160,*">
+      <TextBlock Grid.Column="0" Text="Destreza (DX)" VerticalAlignment="Center" Classes="FieldLabel"/>
+      <NumericUpDown Grid.Column="1" Value="{Binding DX}"
+                     Minimum="1" Maximum="30" Increment="1" Classes="Field"/>
+      <TextBlock Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"
+                 Text="{Binding CostDX, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
+    </Grid>
+
+    <!-- IQ -->
+    <Grid ColumnDefinitions="120,160,*">
+      <TextBlock Grid.Column="0" Text="Inteligência (IQ)" VerticalAlignment="Center" Classes="FieldLabel"/>
+      <NumericUpDown Grid.Column="1" Value="{Binding IQ}"
+                     Minimum="1" Maximum="30" Increment="1" Classes="Field"/>
+      <TextBlock Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"
+                 Text="{Binding CostIQ, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
+    </Grid>
+
+    <!-- HT -->
+    <Grid ColumnDefinitions="120,160,*">
+      <TextBlock Grid.Column="0" Text="Saúde (HT)" VerticalAlignment="Center" Classes="FieldLabel"/>
+      <NumericUpDown Grid.Column="1" Value="{Binding HT}"
+                     Minimum="1" Maximum="30" Increment="1" Classes="Field"/>
+      <TextBlock Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"
+                 Text="{Binding CostHT, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
+    </Grid>
+
+    <TextBlock Margin="0,8,0,0" Opacity="0.6" FontSize="12"
+               Text="ST/HT = 10 pts/nível · DX/IQ = 20 pts/nível"/>
+
+  </StackPanel>
+</UserControl>

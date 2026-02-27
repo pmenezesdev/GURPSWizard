@@ -1,0 +1,97 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GurpsWizard.App.App"
+             RequestedThemeVariant="Dark">
+
+  <Application.Resources>
+    <SolidColorBrush x:Key="AccentColor"    Color="#F9E2AF"/>
+    <SolidColorBrush x:Key="DangerColor"    Color="#F38BA8"/>
+    <SolidColorBrush x:Key="SurfaceColor"   Color="#313244"/>
+    <SolidColorBrush x:Key="SidebarColor"   Color="#1E1E2E"/>
+    <SolidColorBrush x:Key="DividerColor"   Color="#45475A"/>
+    <SolidColorBrush x:Key="TopBarColor"    Color="#181825"/>
+    <SolidColorBrush x:Key="FooterColor"    Color="#181825"/>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme/>
+
+    <!-- ── Tipografia ─────────────────────────────────────────────────────── -->
+    <Style Selector="TextBlock.FieldLabel">
+      <Setter Property="FontWeight"  Value="Medium"/>
+      <Setter Property="Margin"      Value="0,0,0,4"/>
+      <Setter Property="Opacity"     Value="0.85"/>
+    </Style>
+
+    <Style Selector="TextBlock.SectionTitle">
+      <Setter Property="FontSize"   Value="14"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+    </Style>
+
+    <Style Selector="TextBlock.CostLabel">
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+    </Style>
+
+    <Style Selector="TextBlock.ValueLabel">
+      <Setter Property="FontSize"   Value="20"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <Style Selector="TextBlock.AttrLabel">
+      <Setter Property="FontSize"  Value="11"/>
+      <Setter Property="Opacity"   Value="0.6"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style Selector="TextBlock.AttrValue">
+      <Setter Property="FontSize"   Value="24"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- ── Botões ─────────────────────────────────────────────────────────── -->
+    <Style Selector="Button.AccentButton">
+      <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+      <Setter Property="Foreground" Value="#1E1E2E"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <Style Selector="Button.DangerButton">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{StaticResource DangerColor}"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+
+    <Style Selector="Button.NavButton">
+      <Setter Property="Padding"      Value="16,8"/>
+      <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <!-- ── Layout ─────────────────────────────────────────────────────────── -->
+    <Style Selector="Border.TopBar">
+      <Setter Property="Background" Value="{StaticResource TopBarColor}"/>
+    </Style>
+
+    <Style Selector="Border.Footer">
+      <Setter Property="Background" Value="{StaticResource FooterColor}"/>
+    </Style>
+
+    <Style Selector="Border.Sidebar">
+      <Setter Property="Background" Value="{StaticResource SidebarColor}"/>
+    </Style>
+
+    <Style Selector="Border.CardBorder">
+      <Setter Property="Background"    Value="{StaticResource SurfaceColor}"/>
+      <Setter Property="CornerRadius"  Value="6"/>
+    </Style>
+
+    <Style Selector="Border.PointsBadge">
+      <Setter Property="Background"   Value="{StaticResource SurfaceColor}"/>
+      <Setter Property="CornerRadius" Value="20"/>
+    </Style>
+
+  </Application.Styles>
+</Application>

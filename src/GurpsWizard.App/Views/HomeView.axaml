@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels"
+             x:Class="GurpsWizard.App.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+
+  <Grid RowDefinitions="*,Auto,*">
+
+    <!-- Logo/Título -->
+    <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
+      <TextBlock Text="GURPS Wizard" FontSize="42" FontWeight="Bold"
+                 Foreground="{StaticResource AccentColor}" HorizontalAlignment="Center"/>
+      <TextBlock Text="Criação de personagens simplificada" FontSize="16" Opacity="0.6"
+                 HorizontalAlignment="Center"/>
+    </StackPanel>
+
+    <!-- Botões principais -->
+    <StackPanel Grid.Row="1" Spacing="16" HorizontalAlignment="Center">
+      <Button Content="Novo Personagem"
+              Command="{Binding NewCharacterCommand}"
+              Width="240" Height="50"
+              FontSize="16"
+              Classes="AccentButton"
+              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+      <Button Content="Personagens Salvos"
+              Command="{Binding ListCharactersCommand}"
+              Width="240" Height="50"
+              FontSize="16"
+              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+    </StackPanel>
+
+    <!-- Rodapé -->
+    <TextBlock Grid.Row="2" Text="v0.1 MVP" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+               Opacity="0.3" Margin="0,0,0,16"/>
+
+  </Grid>
+</UserControl>

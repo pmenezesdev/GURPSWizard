@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GurpsWizard.App/GurpsWizard.App.csproj" />
+    <Project Path="src/GurpsWizard.Core.Tests/GurpsWizard.Core.Tests.csproj" />
+    <Project Path="src/GurpsWizard.Core/GurpsWizard.Core.csproj" />
+    <Project Path="src/GurpsWizard.Data/GurpsWizard.Data.csproj" />
+  </Folder>
+</Solution>

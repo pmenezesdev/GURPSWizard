@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GurpsWizard.App.Views.SkillsView">
+
+  <Grid ColumnDefinitions="*,8,300" RowDefinitions="*">
+
+    <!-- Coluna esquerda: busca + resultados -->
+    <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto,Auto">
+
+      <TextBox Grid.Row="0" Text="{Binding SearchQuery}"
+               Watermark="Buscar perícia..." Margin="0,0,0,6"/>
+
+      <ListBox Grid.Row="1"
+               ItemsSource="{Binding SearchResults}"
+               SelectedItem="{Binding SelectedLibrarySkill}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ColumnDefinitions="*,50,50">
+              <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
+              <TextBlock Grid.Column="1" Text="{Binding BaseAttribute}"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
+              <TextBlock Grid.Column="2" Text="{Binding Difficulty}"
+                         HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <!-- Seleção de nível relativo -->
+      <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,8,0,4">
+        <TextBlock Grid.Column="0" Text="Nível relativo:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+        <NumericUpDown Grid.Column="1" Value="{Binding RelativeLevel}"
+                       Minimum="-3" Maximum="10"/>
+        <TextBlock Grid.Column="2" Text="Custo:" VerticalAlignment="Center" Margin="12,0,8,0"/>
+        <TextBlock Grid.Column="3" Text="{Binding PreviewCost, StringFormat='{}{0} pts'}"
+                   VerticalAlignment="Center" FontWeight="SemiBold"/>
+      </Grid>
+
+      <Button Grid.Row="3" Content="Adicionar →"
+              Command="{Binding AddCommand}"
+              HorizontalAlignment="Right"/>
+    </Grid>
+
+    <Rectangle Grid.Column="1" Fill="#44FFFFFF"/>
+
+    <!-- Coluna direita: perícias adicionadas -->
+    <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto">
+      <TextBlock Grid.Row="0" Text="Perícias selecionadas" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+      <ListBox Grid.Row="1"
+               ItemsSource="{Binding AddedSkills}"
+               SelectedItem="{Binding SelectedAddedSkill}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ColumnDefinitions="*,40,50">
+              <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+              <TextBlock Grid.Column="1" Text="{Binding Level, StringFormat='{}{0:+#;-#;0}'}"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
+              <TextBlock Grid.Column="2" Text="{Binding Cost, StringFormat='{}{0} pts'}"
+                         HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <Button Grid.Row="2" Content="Remover selecionado"
+              Command="{Binding RemoveSelectedCommand}"
+              HorizontalAlignment="Right" Margin="0,6,0,0"/>
+    </Grid>
+
+  </Grid>
+</UserControl>
