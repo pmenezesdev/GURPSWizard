@@ -137,10 +137,16 @@
       </Grid>
     </ScrollViewer>
 
-    <!-- Rodapé: status + botão salvar -->
+    <!-- Rodapé: status + botões -->
     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="16"
                 HorizontalAlignment="Right" Margin="0,12,0,0">
       <TextBlock Text="{Binding SaveStatus}" VerticalAlignment="Center" Opacity="0.8"/>
+      <Button Content="Exportar JSON"
+              Command="{Binding ExportCommand}"
+              Padding="12,6"/>
+      <Button Content="Exportar GCS"
+              Command="{Binding ExportGcsCommand}"
+              Padding="12,6"/>
       <Button Content="Salvar Personagem"
               Command="{Binding SaveCommand}"
               Classes="AccentButton"/>

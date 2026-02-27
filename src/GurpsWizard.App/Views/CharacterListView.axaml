@@ -12,7 +12,7 @@
       <Button Grid.Column="0" Content="← Voltar" Command="{Binding BackCommand}"/>
       <TextBlock Grid.Column="1" Text="Personagens Salvos" FontSize="24" FontWeight="Bold"
                  HorizontalAlignment="Center" VerticalAlignment="Center"
-                 Foreground="{StaticResource AccentColor}"/>
+                 Foreground="{DynamicResource AccentColor}"/>
     </Grid>
 
     <!-- Lista de personagens -->
@@ -39,7 +39,7 @@
         </ListBox>
 
         <!-- Loading overlay -->
-        <Border Background="#22000000" IsVisible="{Binding IsLoading}">
+        <Border Background="{DynamicResource OverlayColor}" IsVisible="{Binding IsLoading}">
           <ProgressBar IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200"/>
         </Border>
 
@@ -53,17 +53,27 @@
     </Border>
 
     <!-- Ações -->
-    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,20,0,0">
-      <Button Content="Excluir"
-              Command="{Binding DeleteSelectedCommand}"
-              Classes="DangerButton"
-              Foreground="{StaticResource DangerColor}"/>
+    <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,16,0,0">
+      <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <Button Content="Importar JSON"
+                Command="{Binding ImportCommand}"
+                Padding="12,6"/>
+        <TextBlock Text="{Binding ImportStatus}" VerticalAlignment="Center"
+                   Classes="ValidationHint" FontSize="12"
+                   IsVisible="{Binding ImportStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+      </StackPanel>
 
-      <Button Content="Abrir Personagem"
-              Command="{Binding LoadSelectedCommand}"
-              Classes="AccentButton"
-              Padding="24,10"/>
-    </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+        <Button Content="Excluir"
+                Command="{Binding DeleteSelectedCommand}"
+                Classes="DangerButton"
+                Foreground="{DynamicResource DangerColor}"/>
+        <Button Content="Abrir Personagem"
+                Command="{Binding LoadSelectedCommand}"
+                Classes="AccentButton"
+                Padding="24,10"/>
+      </StackPanel>
+    </Grid>
 
   </Grid>
 </UserControl>

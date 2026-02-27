@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text.Json;
 using GurpsWizard.Core.Models;
 using GurpsWizard.Data.Entities;
 using GurpsWizard.Data.Repositories;
@@ -16,9 +17,14 @@ public class CharacterListViewModel : ReactiveObject
 
     [Reactive] public CharacterEntity? SelectedCharacter { get; set; }
     [Reactive] public bool IsLoading { get; private set; }
+    [Reactive] public string ImportStatus { get; private set; } = "";
+
+    /// <summary>Interaction para solicitar ao View o caminho do arquivo de importação.</summary>
+    public Interaction<System.Reactive.Unit, string?> OpenFileInteraction { get; } = new();
 
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> LoadSelectedCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DeleteSelectedCommand { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ImportCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> BackCommand { get; }
 
     public CharacterListViewModel(MainViewModel main, ICharacterRepository characterRepo)
@@ -30,6 +36,7 @@ public class CharacterListViewModel : ReactiveObject
 
         LoadSelectedCommand   = ReactiveCommand.CreateFromTask(LoadSelectedAsync, canExecuteSelected);
         DeleteSelectedCommand = ReactiveCommand.CreateFromTask(DeleteSelectedAsync, canExecuteSelected);
+        ImportCommand         = ReactiveCommand.CreateFromTask(ImportAsync);
         BackCommand           = ReactiveCommand.Create(main.ShowHome);
 
         _ = LoadListAsync();
@@ -66,5 +73,23 @@ public class CharacterListViewModel : ReactiveObject
         await _characterRepo.DeleteAsync(SelectedCharacter.Id);
         Characters.Remove(SelectedCharacter);
         SelectedCharacter = null;
+    }
+
+    private async Task ImportAsync()
+    {
+        var path = await OpenFileInteraction.Handle(System.Reactive.Unit.Default);
+        if (path is null) return;
+
+        try
+        {
+            var json  = await File.ReadAllTextAsync(path);
+            var draft = JsonSerializer.Deserialize<CharacterDraft>(json);
+            if (draft is null) { ImportStatus = "Arquivo inválido."; return; }
+            _main.ImportDraft(draft);
+        }
+        catch (Exception ex)
+        {
+            ImportStatus = $"Erro ao importar: {ex.Message}";
+        }
     }
 }

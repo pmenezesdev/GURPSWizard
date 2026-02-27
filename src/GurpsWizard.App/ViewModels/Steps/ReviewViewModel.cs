@@ -1,3 +1,4 @@
+using System.Text.Json;
 using GurpsWizard.App.ViewModels;
 using GurpsWizard.Core.Models;
 using GurpsWizard.Data.Repositories;
@@ -8,6 +9,8 @@ namespace GurpsWizard.App.ViewModels.Steps;
 
 public class ReviewViewModel : ReactiveObject
 {
+    private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = true };
+
     private readonly WizardViewModel _wizard;
     private readonly ICharacterRepository _characterRepo;
 
@@ -15,7 +18,15 @@ public class ReviewViewModel : ReactiveObject
     [Reactive] public CharacterPoints Points { get; private set; }
     [Reactive] public string SaveStatus { get; private set; } = "";
 
+    /// <summary>Interaction para exportação JSON.</summary>
+    public Interaction<string, string?> SaveFileInteraction { get; } = new();
+
+    /// <summary>Interaction para exportação .gcs.</summary>
+    public Interaction<string, string?> SaveGcsInteraction { get; } = new();
+
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> SaveCommand { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ExportCommand { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ExportGcsCommand { get; }
 
     public ReviewViewModel(WizardViewModel wizard, ICharacterRepository characterRepo)
     {
@@ -31,7 +42,9 @@ public class ReviewViewModel : ReactiveObject
         wizard.WhenAnyValue(x => x.Points)
               .Subscribe(p => Points = p);
 
-        SaveCommand = ReactiveCommand.CreateFromTask(SaveAsync);
+        SaveCommand      = ReactiveCommand.CreateFromTask(SaveAsync);
+        ExportCommand    = ReactiveCommand.CreateFromTask(ExportAsync);
+        ExportGcsCommand = ReactiveCommand.CreateFromTask(ExportGcsAsync);
     }
 
     private async Task SaveAsync()
@@ -46,6 +59,42 @@ public class ReviewViewModel : ReactiveObject
         catch (Exception ex)
         {
             SaveStatus = $"Erro ao salvar: {ex.Message}";
+        }
+    }
+
+    private async Task ExportAsync()
+    {
+        var suggestedName = string.IsNullOrWhiteSpace(Draft.Name) ? "personagem" : Draft.Name;
+        var path = await SaveFileInteraction.Handle(suggestedName);
+        if (path is null) return;
+
+        try
+        {
+            var json = JsonSerializer.Serialize(Draft, JsonOpts);
+            await File.WriteAllTextAsync(path, json);
+            SaveStatus = $"Exportado: {Path.GetFileName(path)}";
+        }
+        catch (Exception ex)
+        {
+            SaveStatus = $"Erro ao exportar: {ex.Message}";
+        }
+    }
+
+    private async Task ExportGcsAsync()
+    {
+        var suggestedName = string.IsNullOrWhiteSpace(Draft.Name) ? "personagem" : Draft.Name;
+        var path = await SaveGcsInteraction.Handle(suggestedName);
+        if (path is null) return;
+
+        try
+        {
+            var gcs = GcsExportService.ToGcs(Draft);
+            await File.WriteAllTextAsync(path, gcs);
+            SaveStatus = $"Exportado GCS: {Path.GetFileName(path)}";
+        }
+        catch (Exception ex)
+        {
+            SaveStatus = $"Erro ao exportar GCS: {ex.Message}";
         }
     }
 }
