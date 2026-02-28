@@ -71,6 +71,8 @@ public class WizardViewModel : ReactiveObject
             [typeof(AdvantagesStep)]    = new AdvantagesViewModel(this, libraryRepository),
             [typeof(DisadvantagesStep)] = new DisadvantagesViewModel(this, libraryRepository),
             [typeof(SkillsStep)]        = new SkillsViewModel(this, libraryRepository),
+            [typeof(TechniquesStep)]    = new TechniquesViewModel(this, libraryRepository),
+            [typeof(SpellsStep)]        = new SpellsViewModel(this, libraryRepository),
             [typeof(EquipmentStep)]     = new EquipmentViewModel(this, libraryRepository),
             [typeof(ReviewStep)]        = new ReviewViewModel(this, characterRepository),
         };

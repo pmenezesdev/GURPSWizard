@@ -3,6 +3,7 @@ using System;
 using GurpsWizard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GurpsWizard.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260228032452_AddPrerequisites")]
+    partial class AddPrerequisites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -161,119 +164,6 @@ namespace GurpsWizard.Data.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("LibrarySkills");
-                });
-
-            modelBuilder.Entity("GurpsWizard.Data.Entities.LibrarySpell", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CastingCost")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CastingTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("College")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Difficulty")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Duration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("GcsId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MaintenanceCost")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PowerSource")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Reference")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Resist")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SpellClass")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("College");
-
-                    b.HasIndex("GcsId")
-                        .IsUnique();
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("LibrarySpells");
-                });
-
-            modelBuilder.Entity("GurpsWizard.Data.Entities.LibraryTechnique", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("DefaultModifier")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Difficulty")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("GcsId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("MaxAboveDefault")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ParentSkillName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Reference")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GcsId")
-                        .IsUnique();
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("LibraryTechniques");
                 });
 
             modelBuilder.Entity("GurpsWizard.Data.Entities.LibraryTrait", b =>

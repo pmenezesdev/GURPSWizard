@@ -1,6 +1,7 @@
 using System.Text.Json;
 using GurpsWizard.App.ViewModels;
 using GurpsWizard.Core.Models;
+using GurpsWizard.Core.Services;
 using GurpsWizard.Data.Repositories;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -17,6 +18,11 @@ public class ReviewViewModel : ReactiveObject
     [Reactive] public CharacterDraft Draft { get; private set; }
     [Reactive] public CharacterPoints Points { get; private set; }
     [Reactive] public string SaveStatus { get; private set; } = "";
+
+    // ── Points breakdown ────────────────────────────────────────────────────
+    [Reactive] public int SpentAttributes { get; private set; }
+    [Reactive] public int SpentSecondary { get; private set; }
+    [Reactive] public int SpentSkills { get; private set; }
 
     /// <summary>Interaction para exportação JSON.</summary>
     public Interaction<string, string?> SaveFileInteraction { get; } = new();
@@ -35,12 +41,17 @@ public class ReviewViewModel : ReactiveObject
 
         Draft  = wizard.Draft;
         Points = wizard.Points;
+        UpdateBreakdown(Draft);
 
         wizard.WhenAnyValue(x => x.Draft)
               .Subscribe(d => Draft = d);
 
         wizard.WhenAnyValue(x => x.Points)
               .Subscribe(p => Points = p);
+
+        // Compute breakdown whenever draft changes
+        wizard.WhenAnyValue(x => x.Draft)
+              .Subscribe(d => UpdateBreakdown(d));
 
         SaveCommand      = ReactiveCommand.CreateFromTask(SaveAsync);
         ExportCommand    = ReactiveCommand.CreateFromTask(ExportAsync);
@@ -78,6 +89,20 @@ public class ReviewViewModel : ReactiveObject
         {
             SaveStatus = $"Erro ao exportar: {ex.Message}";
         }
+    }
+
+    private void UpdateBreakdown(CharacterDraft d)
+    {
+        var a = d.Attributes;
+        SpentAttributes = (a.ST - 10) * 10 + (a.DX - 10) * 20
+                        + (a.IQ - 10) * 20 + (a.HT - 10) * 10;
+
+        var s = d.SecondaryAttributes;
+        SpentSecondary = s.HPBonus * 2 + s.FPBonus * 3
+                       + s.WillBonus * 5 + s.PerBonus * 5
+                       + s.BasicSpeedBonus * 5 + s.BasicMoveBonus * 5;
+
+        SpentSkills = d.Skills.Sum(sk => sk.Cost);
     }
 
     private async Task ExportGcsAsync()

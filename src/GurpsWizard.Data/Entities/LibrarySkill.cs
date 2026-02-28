@@ -34,4 +34,7 @@ public class LibrarySkill
     public string? Notes { get; set; }
 
     public string? Reference { get; set; }
+
+    /// <summary>JSON serializado de um Prerequisite tree (ou null se sem pré-requisitos).</summary>
+    public string? PrerequisitesJson { get; set; }
 }

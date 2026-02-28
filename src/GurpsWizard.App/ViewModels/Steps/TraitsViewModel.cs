@@ -24,18 +24,42 @@ public class TraitsViewModel : ReactiveObject
     [Reactive] public ObservableCollection<string> Categories { get; private set; } = [];
     [Reactive] public ObservableCollection<LibraryTrait> SearchResults { get; private set; } = [];
     [Reactive] public LibraryTrait? SelectedLibraryTrait { get; set; }
+    [Reactive] public int SelectedLevel { get; set; } = 1;
+    [Reactive] public bool SelectedCanLevel { get; private set; }
+    [Reactive] public int PreviewCost { get; private set; }
     [Reactive] public ObservableCollection<TraitEntry> AddedTraits { get; private set; } = [];
     [Reactive] public TraitEntry? SelectedAddedTrait { get; set; }
+
+    [Reactive] public bool ShowCustomForm { get; set; }
+    public CustomTraitFormViewModel CustomTraitForm { get; }
 
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> AddCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> RemoveSelectedCommand { get; }
     public ReactiveCommand<object, System.Reactive.Unit> OpenReferenceCommand { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ToggleCustomFormCommand { get; }
 
     public TraitsViewModel(WizardViewModel wizard, ILibraryRepository repo, bool isDisadvantage)
     {
         _wizard         = wizard;
         _repo           = repo;
         _isDisadvantage = isDisadvantage;
+
+        CustomTraitForm = new CustomTraitFormViewModel();
+        ToggleCustomFormCommand = ReactiveCommand.Create(() => { ShowCustomForm = !ShowCustomForm; });
+
+        // Subscribe to custom trait creation
+        CustomTraitForm.CreateCommand.Subscribe(entry =>
+        {
+            if (entry is null) return;
+            var d       = _wizard.Draft;
+            var newList = _isDisadvantage
+                ? new List<TraitEntry>(d.Disadvantages) { entry }
+                : new List<TraitEntry>(d.Advantages)    { entry };
+            _wizard.Draft = _isDisadvantage
+                ? d with { Disadvantages = newList }
+                : d with { Advantages    = newList };
+            ShowCustomForm = false;
+        });
 
         // Sincroniza lista ao receber Draft
         wizard.WhenAnyValue(x => x.Draft)
@@ -55,6 +79,25 @@ public class TraitsViewModel : ReactiveObject
             .Throttle(TimeSpan.FromMilliseconds(400))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(async _ => await SearchAsync());
+
+        // When selected trait changes, update CanLevel and reset level
+        this.WhenAnyValue(x => x.SelectedLibraryTrait)
+            .Subscribe(t =>
+            {
+                SelectedCanLevel = t?.CanLevel ?? false;
+                SelectedLevel = 1;
+                PreviewCost = t?.BasePoints ?? 0;
+            });
+
+        // Recompute preview cost when level changes
+        this.WhenAnyValue(x => x.SelectedLevel)
+            .Subscribe(level =>
+            {
+                if (SelectedLibraryTrait is { } t)
+                    PreviewCost = t.CanLevel
+                        ? t.BasePoints + (level - 1) * t.PointsPerLevel
+                        : t.BasePoints;
+            });
 
         var canAdd    = this.WhenAnyValue(x => x.SelectedLibraryTrait).Select(t => t is not null);
         var canRemove = this.WhenAnyValue(x => x.SelectedAddedTrait)  .Select(t => t is not null);
@@ -94,8 +137,13 @@ public class TraitsViewModel : ReactiveObject
     {
         if (SelectedLibraryTrait is null) return Task.CompletedTask;
 
-        var trait   = SelectedLibraryTrait;
-        var entry   = new TraitEntry(trait.GcsId, trait.Name, trait.BasePoints, trait.Reference);
+        var trait = SelectedLibraryTrait;
+        var level = SelectedCanLevel ? SelectedLevel : 1;
+        var cost  = trait.CanLevel
+            ? trait.BasePoints + (level - 1) * trait.PointsPerLevel
+            : trait.BasePoints;
+
+        var entry   = new TraitEntry(trait.GcsId, trait.Name, cost, level, trait.Reference);
         var d       = _wizard.Draft;
         var newList = _isDisadvantage
             ? new List<TraitEntry>(d.Disadvantages) { entry }

@@ -50,7 +50,13 @@ public class CharacterRepository(AppDbContext db) : ICharacterRepository
         var entity = await db.Characters.FindAsync(id);
         if (entity is null) return null;
 
-        return JsonSerializer.Deserialize<CharacterDraft>(entity.DraftJson, JsonOpts);
+        var draft = JsonSerializer.Deserialize<CharacterDraft>(entity.DraftJson, JsonOpts);
+        // Compatibilidade com saves anteriores: campos novos chegam null quando ausentes no JSON
+        if (draft is not null && draft.Techniques is null)
+            draft = draft with { Techniques = [] };
+        if (draft is not null && draft.Spells is null)
+            draft = draft with { Spells = [] };
+        return draft;
     }
 
     public async Task<IReadOnlyList<CharacterEntity>> ListAllAsync() =>

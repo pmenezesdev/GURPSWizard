@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="GurpsWizard.App.Views.EquipmentView">
 
-  <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,8,300">
+  <Grid RowDefinitions="*,Auto,Auto" ColumnDefinitions="*,8,300">
 
     <!-- Coluna esquerda: busca + filtros + resultados -->
     <Grid Grid.Column="0" Grid.Row="0" RowDefinitions="Auto,Auto,*,Auto">
@@ -23,28 +23,63 @@
                SelectedItem="{Binding SelectedLibraryEquipment}">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid ColumnDefinitions="*,Auto,70,70" ToolTip.Tip="{Binding Notes}">
+            <Grid ColumnDefinitions="*,Auto,Auto,70,70" ToolTip.Tip="{Binding Notes}">
               <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-              <Button Grid.Column="1" Padding="4,2" Margin="4,0"
+              <Border Grid.Column="1" Background="{DynamicResource SubtleSurface}" CornerRadius="3"
+                      Padding="4,1" Margin="4,0" VerticalAlignment="Center"
+                      IsVisible="{Binding TechLevel, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding TechLevel, StringFormat='TL {0}'}" FontSize="10" Opacity="0.7"/>
+              </Border>
+              <Button Grid.Column="2" Padding="4,2" Margin="4,0"
                       FontSize="10" Foreground="{DynamicResource SystemAccentColor}"
                       Content="{Binding Reference}"
                       Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
                       CommandParameter="{Binding}"
                       IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                       ToolTip.Tip="Abrir PDF na página"/>
-              <TextBlock Grid.Column="2" Text="{Binding Value, StringFormat='$ {0:N2}'}"
+              <TextBlock Grid.Column="3" Text="{Binding Value, StringFormat='$ {0:N2}'}"
                          HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
-              <TextBlock Grid.Column="3" Text="{Binding Weight}"
+              <TextBlock Grid.Column="4" Text="{Binding Weight}"
                          HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
             </Grid>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
 
-      <Button Grid.Row="3" Content="Adicionar →"
-              Command="{Binding AddCommand}"
-              HorizontalAlignment="Right" Margin="0,6,0,0"/>
+      <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,6,0,0" Spacing="8">
+        <Button Content="Adicionar →" Command="{Binding AddCommand}"/>
+        <Button Content="+ Personalizado" Command="{Binding ToggleCustomFormCommand}"
+                FontSize="11" Padding="8,4"
+                ToolTip.Tip="Criar equipamento personalizado"/>
+      </StackPanel>
     </Grid>
+
+    <!-- Painel de criação personalizada -->
+    <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+            Background="{DynamicResource SubtleSurface}" CornerRadius="6"
+            Padding="12,10" Margin="0,6,0,0"
+            IsVisible="{Binding ShowCustomForm}"
+            BorderBrush="{DynamicResource DividerColor}" BorderThickness="1">
+      <StackPanel Spacing="8" DataContext="{Binding CustomEquipmentForm}">
+        <TextBlock Text="Criar Equipamento Personalizado" FontWeight="SemiBold" FontSize="13"/>
+        <Grid ColumnDefinitions="*,8,100,8,100" RowDefinitions="Auto,8,Auto">
+          <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Name}" Watermark="Nome"/>
+          <NumericUpDown Grid.Row="0" Grid.Column="2" Value="{Binding Value}"
+                         Minimum="0" Maximum="999999" Increment="1"
+                         FormatString="N2" ShowButtonSpinner="True"
+                         Watermark="Valor ($)"/>
+          <TextBox Grid.Row="0" Grid.Column="4" Text="{Binding Weight}" Watermark="Peso"/>
+          <TextBox Grid.Row="2" Grid.Column="0" Text="{Binding TechLevel}" Watermark="Nível Tecnológico (opcional)"/>
+          <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Quantity}"
+                         Minimum="1" Maximum="999" Increment="1"
+                         FormatString="0" ShowButtonSpinner="True"
+                         Watermark="Qtd"/>
+          <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding Reference}" Watermark="Ref."/>
+        </Grid>
+        <Button Content="Criar" Command="{Binding CreateCommand}"
+                HorizontalAlignment="Right" Padding="12,4"/>
+      </StackPanel>
+    </Border>
 
     <Rectangle Grid.Column="1" Grid.Row="0" Fill="{DynamicResource ColumnDividerColor}"/>
 
@@ -57,17 +92,22 @@
                SelectedItem="{Binding SelectedAddedEquipment}">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid ColumnDefinitions="30,*,Auto,70">
+            <Grid ColumnDefinitions="30,*,Auto,Auto,70">
               <TextBlock Grid.Column="0" Text="{Binding Quantity, StringFormat='{}{0}x'}" FontWeight="SemiBold" VerticalAlignment="Center" Opacity="0.8"/>
               <TextBlock Grid.Column="1" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-              <Button Grid.Column="2" Padding="4,2" Margin="4,0"
+              <Border Grid.Column="2" Background="{DynamicResource SubtleSurface}" CornerRadius="3"
+                      Padding="4,1" Margin="4,0" VerticalAlignment="Center"
+                      IsVisible="{Binding TechLevel, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding TechLevel, StringFormat='TL {0}'}" FontSize="10" Opacity="0.7"/>
+              </Border>
+              <Button Grid.Column="3" Padding="4,2" Margin="4,0"
                       FontSize="10" Foreground="{DynamicResource SystemAccentColor}"
                       Content="{Binding Reference}"
                       Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
                       CommandParameter="{Binding}"
                       IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                       ToolTip.Tip="Abrir PDF na página"/>
-              <TextBlock Grid.Column="3" Text="{Binding Value, StringFormat='$ {0:N2}'}"
+              <TextBlock Grid.Column="4" Text="{Binding Value, StringFormat='$ {0:N2}'}"
                          HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
             </Grid>
           </DataTemplate>
@@ -80,7 +120,7 @@
     </Grid>
 
     <!-- Rodapé de totais -->
-    <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+    <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
             Background="{DynamicResource SubtleSurface}" CornerRadius="4" Margin="0,8,0,0" Padding="12,6">
       <StackPanel Orientation="Horizontal" Spacing="24">
         <TextBlock>

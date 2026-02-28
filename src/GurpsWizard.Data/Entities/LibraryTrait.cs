@@ -27,6 +27,9 @@ public class LibraryTrait
     /// <summary>Referência de página (ex: "MB97").</summary>
     public string? Reference { get; set; }
 
+    /// <summary>JSON serializado de um Prerequisite tree (ou null se sem pré-requisitos).</summary>
+    public string? PrerequisitesJson { get; set; }
+
     /// <summary>True se BasePoints &lt; 0 (desvantagem).</summary>
     public bool IsDisadvantage => BasePoints < 0;
 }

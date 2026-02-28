@@ -1,0 +1,136 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GurpsWizard.App.Views.SpellsView">
+
+  <Grid ColumnDefinitions="*,8,320" RowDefinitions="*">
+
+    <!-- Coluna esquerda: busca + filtros + resultados -->
+    <Grid Grid.Column="0" RowDefinitions="Auto,Auto,Auto,*,Auto,Auto">
+
+      <TextBox Grid.Row="0" Text="{Binding SearchQuery}"
+               Watermark="Buscar mágica..." Margin="0,0,0,6"/>
+
+      <!-- Filtros: Escola + Classe -->
+      <Grid Grid.Row="1" ColumnDefinitions="*,8,*" Margin="0,0,0,4">
+        <ComboBox Grid.Column="0"
+                  ItemsSource="{Binding Colleges}"
+                  SelectedItem="{Binding SelectedCollege}"
+                  HorizontalAlignment="Stretch"
+                  ToolTip.Tip="Escola da mágica (ex: Fogo, Cura, Ar)"/>
+        <ComboBox Grid.Column="2"
+                  ItemsSource="{Binding SpellClasses}"
+                  SelectedItem="{Binding SelectedClass}"
+                  HorizontalAlignment="Stretch"
+                  ToolTip.Tip="Classe: Comum, Área, Toque, Projétil…"/>
+      </Grid>
+
+      <!-- Filtro de dificuldade -->
+      <ComboBox Grid.Row="2"
+                ItemsSource="{Binding Difficulties}"
+                SelectedItem="{Binding SelectedDifficulty}"
+                PlaceholderText="Dificuldade (H / VH)"
+                HorizontalAlignment="Stretch"
+                Margin="0,0,0,6"
+                ToolTip.Tip="H = Difícil (base IQ) · VH = Muito Difícil (base IQ)"/>
+
+      <!-- Resultados -->
+      <ListBox Grid.Row="3"
+               ItemsSource="{Binding SearchResults}"
+               SelectedItem="{Binding SelectedLibrarySpell}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ToolTip.Tip="{Binding Notes}">
+
+              <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+
+              <!-- Escola -->
+              <Border Grid.Column="1" Background="{DynamicResource SubtleSurface}" CornerRadius="3"
+                      Padding="4,1" Margin="4,0" VerticalAlignment="Center"
+                      IsVisible="{Binding College, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding College}" FontSize="10" Opacity="0.7"/>
+              </Border>
+
+              <!-- Classe -->
+              <Border Grid.Column="2" Background="{DynamicResource SubtleSurface}" CornerRadius="3"
+                      Padding="4,1" Margin="0,0,4,0" VerticalAlignment="Center"
+                      IsVisible="{Binding SpellClass, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding SpellClass}" FontSize="10" Opacity="0.7"/>
+              </Border>
+
+              <!-- Custo de conjuração -->
+              <TextBlock Grid.Column="3" Text="{Binding CastingCost, StringFormat='E:{0}'}"
+                         FontSize="10" Opacity="0.6" VerticalAlignment="Center" Margin="0,0,4,0"
+                         IsVisible="{Binding CastingCost, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+              <!-- Referência PDF -->
+              <Button Grid.Column="4" Padding="4,2" Margin="0"
+                      FontSize="10" Foreground="{DynamicResource SystemAccentColor}"
+                      Content="{Binding Reference}"
+                      Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
+                      CommandParameter="{Binding}"
+                      IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                      ToolTip.Tip="Abrir PDF na página"/>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <!-- Seleção de nível relativo -->
+      <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,8,0,4">
+        <TextBlock Grid.Column="0" Text="Nível relativo (IQ):" VerticalAlignment="Center" Margin="0,0,8,0"/>
+        <NumericUpDown Grid.Column="1" Value="{Binding RelativeLevel}"
+                       Minimum="-3" Maximum="10"/>
+        <TextBlock Grid.Column="2" Text="Custo:" VerticalAlignment="Center" Margin="12,0,8,0"/>
+        <TextBlock Grid.Column="3" Text="{Binding PreviewCost, StringFormat='{}{0} pts'}"
+                   VerticalAlignment="Center" FontWeight="SemiBold"/>
+      </Grid>
+
+      <Button Grid.Row="5" Content="Adicionar" Command="{Binding AddCommand}"
+              HorizontalAlignment="Right"/>
+    </Grid>
+
+    <Rectangle Grid.Column="1" Fill="{DynamicResource ColumnDividerColor}"/>
+
+    <!-- Coluna direita: mágicas adicionadas -->
+    <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto">
+      <TextBlock Grid.Row="0" Text="Mágicas selecionadas" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+      <ListBox Grid.Row="1"
+               ItemsSource="{Binding AddedSpells}"
+               SelectedItem="{Binding SelectedAddedSpell}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ColumnDefinitions="*,Auto,Auto,40,50">
+              <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+
+              <!-- Escola badge -->
+              <Border Grid.Column="1" Background="{DynamicResource SubtleSurface}" CornerRadius="3"
+                      Padding="4,1" Margin="4,0" VerticalAlignment="Center"
+                      IsVisible="{Binding College, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding College}" FontSize="10" Opacity="0.7"/>
+              </Border>
+
+              <Button Grid.Column="2" Padding="4,2" Margin="0,0,4,0"
+                      FontSize="10" Foreground="{DynamicResource SystemAccentColor}"
+                      Content="{Binding Reference}"
+                      Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
+                      CommandParameter="{Binding}"
+                      IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                      ToolTip.Tip="Abrir PDF na página"/>
+
+              <TextBlock Grid.Column="3" Text="{Binding Level, StringFormat='{}{0:+#;-#;0}'}"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
+              <TextBlock Grid.Column="4" Text="{Binding Cost, StringFormat='{}{0} pts'}"
+                         HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <Button Grid.Row="2" Content="Remover selecionada"
+              Command="{Binding RemoveSelectedCommand}"
+              HorizontalAlignment="Right" Margin="0,6,0,0"/>
+    </Grid>
+
+  </Grid>
+</UserControl>

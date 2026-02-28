@@ -65,10 +65,46 @@
                    VerticalAlignment="Center" FontWeight="SemiBold"/>
       </Grid>
 
-      <Button Grid.Row="5" Content="Adicionar"
-              Command="{Binding AddCommand}"
-              HorizontalAlignment="Right"/>
+      <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+        <Button Content="Adicionar" Command="{Binding AddCommand}"/>
+        <Button Content="+ Personalizado" Command="{Binding ToggleCustomFormCommand}"
+                FontSize="11" Padding="8,4"
+                ToolTip.Tip="Criar perícia personalizada"/>
+      </StackPanel>
     </Grid>
+
+    <!-- Painel de criação personalizada -->
+    <Border Grid.Column="0" Grid.ColumnSpan="3"
+            Background="{DynamicResource SubtleSurface}" CornerRadius="6"
+            Padding="12,10" Margin="0,6,0,0"
+            IsVisible="{Binding ShowCustomForm}"
+            BorderBrush="{DynamicResource DividerColor}" BorderThickness="1"
+            VerticalAlignment="Bottom">
+      <StackPanel Spacing="8" DataContext="{Binding CustomSkillForm}">
+        <TextBlock Text="Criar Perícia Personalizada" FontWeight="SemiBold" FontSize="13"/>
+        <Grid ColumnDefinitions="*,8,100,8,100" RowDefinitions="Auto,8,Auto">
+          <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Name}" Watermark="Nome"/>
+          <ComboBox Grid.Row="0" Grid.Column="2"
+                    ItemsSource="{Binding BaseAttributes}"
+                    SelectedItem="{Binding BaseAttribute}"
+                    HorizontalAlignment="Stretch"/>
+          <ComboBox Grid.Row="0" Grid.Column="4"
+                    ItemsSource="{Binding Difficulties}"
+                    SelectedItem="{Binding Difficulty}"
+                    HorizontalAlignment="Stretch"/>
+          <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <TextBlock Text="Nível relativo:" VerticalAlignment="Center" Opacity="0.7"/>
+            <NumericUpDown Value="{Binding RelativeLevel}"
+                           Minimum="-3" Maximum="10" Increment="1"
+                           Width="80" FormatString="0"/>
+            <TextBlock Text="{Binding PreviewCost, StringFormat='Custo: {0} pts'}"
+                       VerticalAlignment="Center" FontWeight="SemiBold"/>
+          </StackPanel>
+        </Grid>
+        <Button Content="Criar" Command="{Binding CreateCommand}"
+                HorizontalAlignment="Right" Padding="12,4"/>
+      </StackPanel>
+    </Border>
 
     <Rectangle Grid.Column="1" Fill="{DynamicResource ColumnDividerColor}"/>
 

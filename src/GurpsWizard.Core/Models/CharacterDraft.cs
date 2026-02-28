@@ -10,6 +10,8 @@ public record CharacterDraft(
     List<TraitEntry> Advantages,
     List<TraitEntry> Disadvantages,
     List<SkillEntry> Skills,
+    List<TechniqueEntry> Techniques,
+    List<SpellEntry> Spells,
     List<EquipmentEntry> Equipment
 )
 {
@@ -22,6 +24,8 @@ public record CharacterDraft(
         Advantages: [],
         Disadvantages: [],
         Skills: [],
+        Techniques: [],
+        Spells: [],
         Equipment: []
     );
 }

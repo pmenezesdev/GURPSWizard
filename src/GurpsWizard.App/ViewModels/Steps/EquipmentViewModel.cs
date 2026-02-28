@@ -24,14 +24,30 @@ public class EquipmentViewModel : ReactiveObject
     [Reactive] public decimal TotalValue { get; private set; }
     [Reactive] public string TotalWeight { get; private set; } = "0.00 kg";
 
+    [Reactive] public bool ShowCustomForm { get; set; }
+    public CustomEquipmentFormViewModel CustomEquipmentForm { get; }
+
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> AddCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> RemoveSelectedCommand { get; }
     public ReactiveCommand<object, System.Reactive.Unit> OpenReferenceCommand { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ToggleCustomFormCommand { get; }
 
     public EquipmentViewModel(WizardViewModel wizard, ILibraryRepository repo)
     {
         _wizard = wizard;
         _repo   = repo;
+
+        CustomEquipmentForm = new CustomEquipmentFormViewModel();
+        ToggleCustomFormCommand = ReactiveCommand.Create(() => { ShowCustomForm = !ShowCustomForm; });
+
+        // Subscribe to custom equipment creation
+        CustomEquipmentForm.CreateCommand.Subscribe(entry =>
+        {
+            if (entry is null) return;
+            var currentList = new List<EquipmentEntry>(_wizard.Draft.Equipment) { entry };
+            _wizard.Draft = _wizard.Draft with { Equipment = currentList };
+            ShowCustomForm = false;
+        });
 
         wizard.WhenAnyValue(x => x.Draft)
               .Subscribe(d =>
@@ -94,7 +110,7 @@ public class EquipmentViewModel : ReactiveObject
         else
         {
             // Adiciona novo
-            currentList.Add(new EquipmentEntry(eq.GcsId, eq.Name, eq.Value, eq.Weight ?? "0", 1, eq.Reference));
+            currentList.Add(new EquipmentEntry(eq.GcsId, eq.Name, eq.Value, eq.Weight ?? "0", eq.TechLevel, 1, eq.Reference));
         }
 
         _wizard.Draft = _wizard.Draft with { Equipment = currentList };

@@ -85,6 +85,9 @@ public class CharacterListViewModel : ReactiveObject
             var json  = await File.ReadAllTextAsync(path);
             var draft = JsonSerializer.Deserialize<CharacterDraft>(json);
             if (draft is null) { ImportStatus = "Arquivo inválido."; return; }
+            // Compatibilidade com saves anteriores: campos novos chegam null quando ausentes no JSON
+            if (draft.Techniques is null) draft = draft with { Techniques = [] };
+            if (draft.Spells is null)     draft = draft with { Spells = [] };
             _main.ImportDraft(draft);
         }
         catch (Exception ex)

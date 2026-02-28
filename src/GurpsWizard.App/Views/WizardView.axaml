@@ -26,6 +26,12 @@
     <DataTemplate DataType="{x:Type vmSteps:SkillsViewModel}">
       <views:SkillsView/>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:TechniquesViewModel}">
+      <views:TechniquesView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vmSteps:SpellsViewModel}">
+      <views:SpellsView/>
+    </DataTemplate>
     <DataTemplate DataType="{x:Type vmSteps:EquipmentViewModel}">
       <views:EquipmentView/>
     </DataTemplate>
@@ -171,9 +177,17 @@
     <!-- ── Rodapé: navegação ─────────────────────────────────────────────── -->
     <Border Grid.Row="2" Classes="Footer" Padding="16,10">
       <Grid ColumnDefinitions="*,Auto,Auto">
-        <TextBlock Grid.Column="0" VerticalAlignment="Center" Opacity="0.5"
-                   Classes.PointsWarning="{Binding IsOverBudget}"
-                   Text="{Binding Points.Remaining, StringFormat='Pontos restantes: {0}'}"/>
+        <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="1">
+          <TextBlock Opacity="0.5"
+                     Classes.PointsWarning="{Binding IsOverBudget}"
+                     Text="{Binding Points.Remaining, StringFormat='Pontos restantes: {0}'}"/>
+          <StackPanel Orientation="Horizontal" Spacing="12">
+            <TextBlock Text="{Binding Points.SpentAdvantages, StringFormat='Vantagens: +{0} pts'}"
+                       FontSize="11" Foreground="{DynamicResource AccentColor}" Opacity="0.8"/>
+            <TextBlock Text="{Binding Points.SpentDisadvantages, StringFormat='Desvantagens: {0} pts'}"
+                       FontSize="11" Foreground="{DynamicResource DangerColor}" Opacity="0.8"/>
+          </StackPanel>
+        </StackPanel>
         <Button Grid.Column="1" Content="← Voltar"
                 Command="{Binding BackCommand}"
                 Margin="0,0,8,0" Classes="NavButton"/>

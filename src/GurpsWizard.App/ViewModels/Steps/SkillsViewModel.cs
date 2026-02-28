@@ -27,18 +27,34 @@ public class SkillsViewModel : ReactiveObject
     [Reactive] public int RelativeLevel { get; set; } = 0;
     [Reactive] public int PreviewCost { get; private set; } = 1;
     [Reactive] public bool HasNoSkills { get; private set; } = true;
+    [Reactive] public bool ShowCustomForm { get; set; }
 
     public IReadOnlyList<string?> Attributes { get; } = [null, "ST", "DX", "IQ", "HT"];
     public IReadOnlyList<string?> Difficulties { get; } = [null, "E", "A", "H", "VH"];
 
+    public CustomSkillFormViewModel CustomSkillForm { get; }
+
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> AddCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> RemoveSelectedCommand { get; }
     public ReactiveCommand<object, System.Reactive.Unit> OpenReferenceCommand { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ToggleCustomFormCommand { get; }
 
     public SkillsViewModel(WizardViewModel wizard, ILibraryRepository repo)
     {
         _wizard = wizard;
         _repo   = repo;
+
+        CustomSkillForm = new CustomSkillFormViewModel();
+        ToggleCustomFormCommand = ReactiveCommand.Create(() => { ShowCustomForm = !ShowCustomForm; });
+
+        // Subscribe to custom skill creation
+        CustomSkillForm.CreateCommand.Subscribe(entry =>
+        {
+            if (entry is null) return;
+            var newList = new List<SkillEntry>(_wizard.Draft.Skills) { entry };
+            _wizard.Draft = _wizard.Draft with { Skills = newList };
+            ShowCustomForm = false;
+        });
 
         wizard.WhenAnyValue(x => x.Draft)
               .Subscribe(d =>

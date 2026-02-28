@@ -36,13 +36,18 @@ public static class PointCalculator
     /// </summary>
     public static CharacterPoints Calculate(CharacterDraft draft)
     {
+        int spentAdvantages    = draft.Advantages.Sum(t => t.Cost);
+        int spentDisadvantages = draft.Disadvantages.Sum(t => t.Cost);
+
         int spent = AttributeCost(draft.Attributes)
                   + SecondaryCost(draft.SecondaryAttributes)
-                  + draft.Advantages.Sum(t => t.Cost)
-                  + draft.Disadvantages.Sum(t => t.Cost)
-                  + draft.Skills.Sum(s => s.Cost);
+                  + spentAdvantages
+                  + spentDisadvantages
+                  + draft.Skills.Sum(s => s.Cost)
+                  + (draft.Techniques?.Sum(t => t.Cost) ?? 0)
+                  + (draft.Spells?.Sum(s => s.Cost) ?? 0);
 
-        return new CharacterPoints(draft.TotalPoints, spent, draft.TotalPoints - spent);
+        return new CharacterPoints(draft.TotalPoints, spent, draft.TotalPoints - spent, spentAdvantages, spentDisadvantages);
     }
 
     // -------------------------------------------------------------------------
@@ -86,6 +91,22 @@ public static class PointCalculator
             3     => 8,
             >= 4  => 12 + (adjustedLevel - 4) * 4
         };
+    }
+
+    /// <summary>
+    /// Custo de uma técnica em pontos, conforme a Tabela de Custo das Técnicas (MB p.230).
+    /// </summary>
+    /// <param name="difficulty">"A" (Média) ou "H" (Difícil)</param>
+    /// <param name="levelsAboveDefault">Níveis acima do valor predefinido (0 = no predefinido, custo zero)</param>
+    public static int TechniqueCost(string difficulty, int levelsAboveDefault)
+    {
+        if (levelsAboveDefault <= 0) return 0;
+
+        // Difícil: predefinido+1 = 2 pts, predefinido+2 = 3 pts, ... = n+1
+        // Média:   predefinido+1 = 1 pt,  predefinido+2 = 2 pts, ... = n
+        return difficulty.ToUpperInvariant() == "H"
+            ? levelsAboveDefault + 1
+            : levelsAboveDefault;
     }
 
     // -------------------------------------------------------------------------

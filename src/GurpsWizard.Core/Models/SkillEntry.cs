@@ -12,5 +12,6 @@ public record SkillEntry(
     string Difficulty,
     int Level,
     int Cost,
-    string? Reference = null
+    string? Reference = null,
+    bool IsCustom = false
 );

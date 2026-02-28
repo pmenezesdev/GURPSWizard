@@ -35,6 +35,7 @@ public static class GcsExportService
             ["attributes"]   = BuildAttributes(draft),
             ["traits"]       = BuildTraits(draft),
             ["skills"]       = BuildSkills(draft),
+            ["equipment"]    = BuildEquipment(draft),
         };
 
         return root.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
@@ -98,19 +99,23 @@ public static class GcsExportService
         var arr = new JsonArray();
         foreach (var t in d.Advantages.Concat(d.Disadvantages))
         {
-            arr.Add(new JsonObject
+            var obj = new JsonObject
             {
                 ["id"]          = NewId('t'),
-                ["source"]      = new JsonObject
+                ["name"]        = t.Name,
+                ["base_points"] = t.Cost,
+                ["calc"]        = new JsonObject { ["points"] = t.Cost },
+            };
+            if (!t.IsCustom)
+            {
+                obj["source"] = new JsonObject
                 {
                     ["library"] = "/gcs_user_library",
                     ["path"]    = "Módulo Básico/Módulo Básico Vantagens e Desvantagens.adq",
                     ["id"]      = t.DefinitionId,
-                },
-                ["name"]        = t.Name,
-                ["base_points"] = t.Cost,
-                ["calc"]        = new JsonObject { ["points"] = t.Cost },
-            });
+                };
+            }
+            arr.Add(obj);
         }
         return arr;
     }
@@ -125,17 +130,44 @@ public static class GcsExportService
             var obj  = new JsonObject
             {
                 ["id"]         = NewId('s'),
-                ["source"]     = new JsonObject
-                {
-                    ["library"] = "/gcs_user_library",
-                    ["path"]    = "Módulo Básico/Módulo Básico Perícias.skl",
-                    ["id"]      = s.DefinitionId,
-                },
                 ["name"]       = name,
                 ["difficulty"] = diff,
                 ["points"]     = s.Cost,
             };
+            if (!s.IsCustom)
+            {
+                obj["source"] = new JsonObject
+                {
+                    ["library"] = "/gcs_user_library",
+                    ["path"]    = "Módulo Básico/Módulo Básico Perícias.skl",
+                    ["id"]      = s.DefinitionId,
+                };
+            }
             if (spec is not null) obj["specialization"] = spec;
+            arr.Add(obj);
+        }
+        return arr;
+    }
+
+    private static JsonArray BuildEquipment(CharacterDraft d)
+    {
+        var arr = new JsonArray();
+        foreach (var e in d.Equipment)
+        {
+            var obj = new JsonObject
+            {
+                ["type"]        = "equipment",
+                ["id"]          = NewId('e'),
+                ["description"] = e.Name,
+                ["value"]       = e.Value,
+                ["weight"]      = e.Weight,
+                ["quantity"]    = e.Quantity,
+                ["equipped"]    = true,
+            };
+            if (!string.IsNullOrEmpty(e.TechLevel))
+                obj["tech_level"] = e.TechLevel;
+            if (!string.IsNullOrEmpty(e.Reference))
+                obj["reference"] = e.Reference;
             arr.Add(obj);
         }
         return arr;

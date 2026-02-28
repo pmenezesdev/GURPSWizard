@@ -6,6 +6,8 @@ public record EquipmentEntry(
     string Name,
     decimal Value,
     string Weight,
+    string? TechLevel = null,
     int Quantity = 1,
-    string? Reference = null
+    string? Reference = null,
+    bool IsCustom = false
 );

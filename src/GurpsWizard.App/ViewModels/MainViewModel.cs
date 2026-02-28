@@ -55,6 +55,8 @@ public class MainViewModel : ReactiveObject
             new AdvantagesStep(),
             new DisadvantagesStep(),
             new SkillsStep(),
+            new TechniquesStep(),
+            new SpellsStep(),
             new EquipmentStep(),
             new ReviewStep(),
         ]);
@@ -72,6 +74,8 @@ public class MainViewModel : ReactiveObject
             new AdvantagesStep(),
             new DisadvantagesStep(),
             new SkillsStep(),
+            new TechniquesStep(),
+            new SpellsStep(),
             new EquipmentStep(),
             new ReviewStep(),
         ]);
@@ -89,6 +93,8 @@ public class MainViewModel : ReactiveObject
             new AdvantagesStep(),
             new DisadvantagesStep(),
             new SkillsStep(),
+            new TechniquesStep(),
+            new SpellsStep(),
             new EquipmentStep(),
             new ReviewStep(),
         ]);

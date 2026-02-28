@@ -263,6 +263,8 @@ public class PointCalculatorTests
             Advantages: [new TraitEntry("v1", "Reflexos de Combate", 15)],
             Disadvantages: [new TraitEntry("d1", "Acrofobia", -10)],
             Skills: [new SkillEntry("s1", "Espadas", "DX", "E", Level: 2, Cost: 4)],
+            Techniques: [],
+            Spells: [],
             Equipment: []
         );
 

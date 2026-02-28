@@ -34,6 +34,18 @@ public class DatabaseInitializer(AppDbContext db, GcsLoader loader)
             anyLoaded = true;
         }
 
+        if (!await db.LibraryTechniques.AnyAsync())
+        {
+            await LoadTechniquesAsync(gcsDataPath, progress);
+            anyLoaded = true;
+        }
+
+        if (!await db.LibrarySpells.AnyAsync())
+        {
+            await LoadSpellsAsync(gcsDataPath, progress);
+            anyLoaded = true;
+        }
+
         if (!await db.LibraryEquipment.AnyAsync())
         {
             await LoadEquipmentAsync(gcsDataPath, progress);
@@ -89,6 +101,50 @@ public class DatabaseInitializer(AppDbContext db, GcsLoader loader)
             db.LibrarySkills.Add(s);
 
         progress?.Report($"Perícias: {all.Count} itens. Salvando…");
+        await db.SaveChangesAsync();
+    }
+
+    // ── Técnicas (.skl — subconjunto sem atributo base) ──────────────────────
+
+    private async Task LoadTechniquesAsync(string basePath, IProgress<string>? progress)
+    {
+        var sklFiles = Directory.GetFiles(basePath, "*.skl", SearchOption.AllDirectories);
+
+        var all = new Dictionary<string, Entities.LibraryTechnique>(StringComparer.Ordinal);
+        foreach (var file in sklFiles)
+        {
+            progress?.Report($"Lendo técnicas: {Path.GetFileName(file)}…");
+            foreach (var t in await loader.LoadTechniquesAsync(file))
+                all.TryAdd(t.GcsId, t);
+        }
+
+        var existing = await db.LibraryTechniques.Select(t => t.GcsId).ToHashSetAsync();
+        foreach (var t in all.Values.Where(t => !existing.Contains(t.GcsId)))
+            db.LibraryTechniques.Add(t);
+
+        progress?.Report($"Técnicas: {all.Count} itens. Salvando…");
+        await db.SaveChangesAsync();
+    }
+
+    // ── Mágicas (.spl) ────────────────────────────────────────────────────────
+
+    private async Task LoadSpellsAsync(string basePath, IProgress<string>? progress)
+    {
+        var splFiles = Directory.GetFiles(basePath, "*.spl", SearchOption.AllDirectories);
+
+        var all = new Dictionary<string, Entities.LibrarySpell>(StringComparer.Ordinal);
+        foreach (var file in splFiles)
+        {
+            progress?.Report($"Lendo mágicas: {Path.GetFileName(file)}…");
+            foreach (var s in await loader.LoadSpellsAsync(file))
+                all.TryAdd(s.GcsId, s);
+        }
+
+        var existing = await db.LibrarySpells.Select(s => s.GcsId).ToHashSetAsync();
+        foreach (var s in all.Values.Where(s => !existing.Contains(s.GcsId)))
+            db.LibrarySpells.Add(s);
+
+        progress?.Report($"Mágicas: {all.Count} itens. Salvando…");
         await db.SaveChangesAsync();
     }
 
