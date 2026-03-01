@@ -21,9 +21,27 @@ public class AttributesViewModel : ReactiveObject
     [Reactive] public int CostIQ { get; private set; }
     [Reactive] public int CostHT { get; private set; }
 
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementST { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementST { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementDX { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementDX { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementIQ { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementIQ { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementHT { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementHT { get; }
+
     public AttributesViewModel(WizardViewModel wizard)
     {
         _wizard = wizard;
+
+        IncrementST = ReactiveCommand.Create(() => { ST++; });
+        DecrementST = ReactiveCommand.Create(() => { ST = Math.Max(1, ST - 1); });
+        IncrementDX = ReactiveCommand.Create(() => { DX++; });
+        DecrementDX = ReactiveCommand.Create(() => { DX = Math.Max(1, DX - 1); });
+        IncrementIQ = ReactiveCommand.Create(() => { IQ++; });
+        DecrementIQ = ReactiveCommand.Create(() => { IQ = Math.Max(1, IQ - 1); });
+        IncrementHT = ReactiveCommand.Create(() => { HT++; });
+        DecrementHT = ReactiveCommand.Create(() => { HT = Math.Max(1, HT - 1); });
 
         // Sincroniza localmente ao receber novo Draft
         wizard.WhenAnyValue(x => x.Draft)

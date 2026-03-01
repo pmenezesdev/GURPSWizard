@@ -12,6 +12,7 @@ public class DisadvantagesStep : IWizardStep
 
     public string Title => "Desvantagens";
     public string Description => $"Escolha as desvantagens do personagem. Limite: {DefaultDisadvLimit} pontos.";
+    public string? BackgroundImage => "/Assets/Images/Steps/bg_advantages.png";
 
     public bool CanProceed(CharacterDraft draft)
     {

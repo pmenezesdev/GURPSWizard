@@ -34,9 +34,35 @@ public class SecondaryViewModel : ReactiveObject
     [Reactive] public int CostBasicSpeed { get; private set; }
     [Reactive] public int CostBasicMove { get; private set; }
 
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementHP { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementHP { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementFP { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementFP { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementWill { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementWill { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementPer { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementPer { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementSpeed { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementSpeed { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> IncrementMove { get; }
+    public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> DecrementMove { get; }
+
     public SecondaryViewModel(WizardViewModel wizard)
     {
         _wizard = wizard;
+
+        IncrementHP = ReactiveCommand.Create(() => { HPBonus++; });
+        DecrementHP = ReactiveCommand.Create(() => { HPBonus--; });
+        IncrementFP = ReactiveCommand.Create(() => { FPBonus++; });
+        DecrementFP = ReactiveCommand.Create(() => { FPBonus--; });
+        IncrementWill = ReactiveCommand.Create(() => { WillBonus++; });
+        DecrementWill = ReactiveCommand.Create(() => { WillBonus--; });
+        IncrementPer = ReactiveCommand.Create(() => { PerBonus++; });
+        DecrementPer = ReactiveCommand.Create(() => { PerBonus--; });
+        IncrementSpeed = ReactiveCommand.Create(() => { BasicSpeedBonus++; });
+        DecrementSpeed = ReactiveCommand.Create(() => { BasicSpeedBonus = Math.Max(0, BasicSpeedBonus - 1); });
+        IncrementMove = ReactiveCommand.Create(() => { BasicMoveBonus++; });
+        DecrementMove = ReactiveCommand.Create(() => { BasicMoveBonus = Math.Max(0, BasicMoveBonus - 1); });
 
         // Sincroniza ao receber Draft
         wizard.WhenAnyValue(x => x.Draft)

@@ -8,6 +8,8 @@ public class HomeViewModel : ReactiveObject
 
     public ThemeService Theme => ThemeService.Instance;
 
+    public string? BackgroundImage => "/Assets/Images/Steps/bg_main.jpg";
+
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> NewCharacterCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ListCharactersCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> ToggleThemeCommand { get; }

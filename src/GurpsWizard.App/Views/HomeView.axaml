@@ -1,68 +1,93 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels"
+             xmlns:views="clr-namespace:GurpsWizard.App.Views"
              x:Class="GurpsWizard.App.Views.HomeView"
              x:DataType="vm:HomeViewModel">
 
-  <Grid RowDefinitions="Auto,*,Auto,Auto,*,Auto">
+  <UserControl.Resources>
+    <views:BitmapAssetValueConverter x:Key="variableImageConverter"/>
+  </UserControl.Resources>
 
-    <!-- Barra de Ferramentas Superior -->
-    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="8">
-      <!-- Configurações (Esquerda) -->
-      <Button Grid.Column="0" Command="{Binding ShowSettingsCommand}"
-              Classes="IconButton" ToolTip.Tip="Configurações">
-        <TextBlock Text="⚙" FontSize="20" Opacity="0.7"/>
-      </Button>
+  <Panel Classes="WizardScreen">
+    
+    <!-- Background Layer -->
+    <Panel Name="BackgroundLayer">
+      <Border Background="{StaticResource BackgroundGradient}"/>
+      <Image Source="{Binding BackgroundImage, Converter={StaticResource variableImageConverter}}" 
+             Stretch="UniformToFill" 
+             VerticalAlignment="Top"
+             Height="500"
+             Opacity="0.5"
+             IsVisible="{Binding BackgroundImage, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <Image.OpacityMask>
+          <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="White" Offset="0"/>
+            <GradientStop Color="Transparent" Offset="1"/>
+          </LinearGradientBrush>
+        </Image.OpacityMask>
+      </Image>
+      <Panel Background="{DynamicResource ColorOverlay}"/>
+    </Panel>
 
-      <!-- Botão de tema (Direita) -->
-      <Button Grid.Column="2" Command="{Binding ToggleThemeCommand}"
-              Classes="IconButton" ToolTip.Tip="Alternar tema">
-        <Panel>
-          <TextBlock Text="Claro"  IsVisible="{Binding Theme.IsDark}"  FontSize="12"/>
-          <TextBlock Text="Escuro" IsVisible="{Binding !Theme.IsDark}" FontSize="12"/>
-        </Panel>
-      </Button>
-    </Grid>
+    <StackPanel Classes="FinalScreenContent">
+      
+      <!-- Title Section -->
+      <StackPanel Spacing="10" Margin="0,0,0,60">
+        <TextBlock Classes="FinalScreenTitle" 
+                   Text="GURPS WIZARD" 
+                   FontSize="72"
+                   Foreground="{DynamicResource ColorGoldBright}"/>
+        <TextBlock Text="CRIAÇÃO DE PERSONAGEM SIMPLIFICADA" 
+                   HorizontalAlignment="Center" 
+                   FontSize="14" 
+                   LetterSpacing="0.2" 
+                   Opacity="0.9"
+                   Foreground="{DynamicResource ColorGoldMid}"
+                   FontFamily="{StaticResource FontDisplay}"/>
+        <TextBlock Text="4ª EDIÇÃO · MÓDULO BÁSICO" 
+                   HorizontalAlignment="Center" 
+                   FontSize="10" 
+                   Opacity="0.7" 
+                   FontStyle="Italic"
+                   Margin="0,5,0,0"/>
+      </StackPanel>
 
-    <!-- Logo/Título -->
-    <StackPanel Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                Spacing="6" Margin="0,0,0,16">
-      <TextBlock Text="GURPS Wizard" FontSize="40" FontWeight="Bold"
-                 Foreground="{DynamicResource AccentColor}" HorizontalAlignment="Center"/>
-      <TextBlock Text="Criação de personagens simplificada" FontSize="15" Opacity="0.6"
-                 HorizontalAlignment="Center"/>
-      <TextBlock Text="4ª Edição · Basic Set" FontSize="11" Opacity="0.4"
-                 HorizontalAlignment="Center" FontStyle="Italic"/>
+      <!-- Main Actions -->
+      <StackPanel Spacing="25">
+        
+        <StackPanel Classes="StartBtnWrapper">
+          <TextBlock Classes="StartBtnOrnament" Text="❖"/>
+          <Button Classes="StartBtn" 
+                  Content="NOVA AVENTURA" 
+                  Command="{Binding NewCharacterCommand}"/>
+          <TextBlock Classes="StartBtnOrnament" Text="❖"/>
+        </StackPanel>
+
+        <Button Classes="NavBtnSecondary" 
+                Content="PERSONAGENS SALVOS" 
+                Command="{Binding ListCharactersCommand}"
+                HorizontalAlignment="Center"
+                FontSize="14"
+                Foreground="{DynamicResource ColorGoldBright}"/>
+        
+        <Button Classes="NavBtnSecondary" 
+                Content="CONFIGURAÇÕES" 
+                Command="{Binding ShowSettingsCommand}"
+                HorizontalAlignment="Center"
+                FontSize="11"
+                Opacity="0.8"/>
+      </StackPanel>
+
     </StackPanel>
 
-    <!-- Separador ornamental GURPS -->
-    <Grid Grid.Row="2" Classes="GurpsRule" Width="260" HorizontalAlignment="Center"
-          ColumnDefinitions="*,Auto,*" Margin="0,0,0,20">
-      <Rectangle Grid.Column="0"/>
-      <TextBlock Grid.Column="1" Text="*"/>
-      <Rectangle Grid.Column="2"/>
-    </Grid>
+    <!-- Version Footer -->
+    <TextBlock VerticalAlignment="Bottom" 
+               HorizontalAlignment="Center" 
+               Text="v0.1 MLP · GURPS Wizard" 
+               FontSize="9" 
+               Opacity="0.2" 
+               Margin="0,0,0,15"/>
 
-    <!-- Botões principais -->
-    <StackPanel Grid.Row="3" Spacing="14" HorizontalAlignment="Center">
-      <Button Content="Novo Personagem"
-              Command="{Binding NewCharacterCommand}"
-              Width="248" Height="52"
-              FontSize="16"
-              Classes="AccentButton"
-              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-
-      <Button Content="Personagens Salvos"
-              Command="{Binding ListCharactersCommand}"
-              Width="248" Height="52"
-              FontSize="15"
-              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-    </StackPanel>
-
-    <!-- Rodapé -->
-    <TextBlock Grid.Row="5" Text="v0.1 MLP · GURPS Wizard" VerticalAlignment="Bottom"
-               HorizontalAlignment="Center"
-               Opacity="0.25" FontSize="11" Margin="0,0,0,14"/>
-
-  </Grid>
+  </Panel>
 </UserControl>

@@ -4,30 +4,65 @@
              x:Class="GurpsWizard.App.Views.ConceptView"
              x:DataType="vm:ConceptViewModel">
 
-  <StackPanel Spacing="16" MaxWidth="600" HorizontalAlignment="Left">
+  <StackPanel MaxWidth="600" HorizontalAlignment="Center">
 
-    <TextBlock Text="Nome do Personagem" Classes="FieldLabel"/>
-    <TextBox Text="{Binding Name}"
-             Watermark="Ex.: Alaric von Thorn"
-             Classes="Field"
-             Classes.ValidationError="{Binding HasNameError}"/>
-    <TextBlock Text="O nome é obrigatório para avançar."
-               Classes="ValidationHint"
-               IsVisible="{Binding HasNameError}"/>
+    <!-- Character Info Card -->
+    <Border Classes="FeatureCard" Margin="0,0,0,20">
+      <StackPanel Spacing="16">
+        
+        <StackPanel Spacing="4">
+          <TextBlock Text="NOME DO PERSONAGEM" 
+                     FontSize="10" 
+                     LetterSpacing="0.1" 
+                     Opacity="0.6"/>
+          <TextBox Text="{Binding Name}"
+                   Watermark="ex: Alaric von Thorn"
+                   Classes.ValidationError="{Binding HasNameError}"
+                   FontSize="16"
+                   Background="Transparent"
+                   BorderBrush="{DynamicResource ColorBorderRule}"
+                   BorderThickness="0,0,0,1"/>
+          <TextBlock Text="O nome é obrigatório para continuar."
+                     Classes="ValidationHint"
+                     IsVisible="{Binding HasNameError}"
+                     FontSize="10"/>
+        </StackPanel>
 
-    <TextBlock Text="Descrição" Classes="FieldLabel"/>
-    <TextBox Text="{Binding Description}"
-             Watermark="Aparência, histórico, motivação..."
-             AcceptsReturn="True"
-             MinHeight="100"
-             Classes="Field"/>
+        <StackPanel Spacing="4">
+          <TextBlock Text="DESCRIÇÃO" 
+                     FontSize="10" 
+                     LetterSpacing="0.1" 
+                     Opacity="0.6"/>
+          <TextBox Text="{Binding Description}"
+                   Watermark="Aparência, histórico, motivações..."
+                   AcceptsReturn="True"
+                   MinHeight="100"
+                   MaxHeight="200"
+                   Background="Transparent"
+                   BorderBrush="{DynamicResource ColorBorderRule}"
+                   BorderThickness="1"
+                   CornerRadius="4"/>
+        </StackPanel>
 
-    <TextBlock Text="Pontos da Campanha" Classes="FieldLabel"/>
-    <NumericUpDown Value="{Binding TotalPoints}"
-                   Minimum="25" Maximum="1000" Increment="25"
-                   Width="160" HorizontalAlignment="Left"
-                   Classes="Field"/>
+      </StackPanel>
+    </Border>
 
+    <!-- Campaign Points Card -->
+    <Border Classes="FeatureCard">
+      <StackPanel Spacing="10" Orientation="Horizontal" HorizontalAlignment="Center">
+        <TextBlock Text="PONTOS DA CAMPANHA" 
+                   VerticalAlignment="Center"
+                   FontSize="12" 
+                   LetterSpacing="0.05" 
+                   Opacity="0.8"/>
+        <NumericUpDown Value="{Binding TotalPoints}"
+                       Minimum="25" Maximum="1000" Increment="25"
+                       Width="140"
+                       Background="Transparent"
+                       BorderBrush="{DynamicResource ColorBorderRule}"
+                       HorizontalAlignment="Left"/>
+      </StackPanel>
+    </Border>
 
   </StackPanel>
 </UserControl>

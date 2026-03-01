@@ -4,72 +4,96 @@
              x:Class="GurpsWizard.App.Views.SecondaryView"
              x:DataType="vm:SecondaryViewModel">
 
-  <StackPanel Spacing="6" MaxWidth="520" HorizontalAlignment="Left">
+  <StackPanel HorizontalAlignment="Center">
+    <UniformGrid Columns="3" MaxWidth="800" HorizontalAlignment="Center">
+      
+      <!-- HP -->
+      <Border Classes="StatCard" Margin="6">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="StatCardName" Text="PONTOS DE VIDA (PV)"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementHP}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding HP}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementHP}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostHP, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="10"/>
+        </StackPanel>
+      </Border>
 
-    <TextBlock Text="Atributos Secundários" Classes="SectionTitle" Margin="0,0,0,8"/>
+      <!-- FP -->
+      <Border Classes="StatCard" Margin="6">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="StatCardName" Text="PONTOS DE FADIGA (PF)"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementFP}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding FP}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementFP}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostFP, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="10"/>
+        </StackPanel>
+      </Border>
 
-    <!-- PV -->
-    <Grid ColumnDefinitions="140,80,120,80,*">
-      <TextBlock Grid.Column="0" Text="PV (Pontos de Vida)" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <TextBlock Grid.Column="1" Text="{Binding HP}" VerticalAlignment="Center" Classes="ValueLabel"/>
-      <TextBlock Grid.Column="2" Text="Bônus:" VerticalAlignment="Center" Opacity="0.7"/>
-      <NumericUpDown Grid.Column="3" Value="{Binding HPBonus}" Minimum="-5" Maximum="30" Classes="Field"/>
-      <TextBlock Grid.Column="4" Margin="8,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostHP, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+      <!-- WILL -->
+      <Border Classes="StatCard" Margin="6">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="StatCardName" Text="VONTADE"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementWill}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding Will}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementWill}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostWill, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="10"/>
+        </StackPanel>
+      </Border>
 
-    <!-- PM -->
-    <Grid ColumnDefinitions="140,80,120,80,*">
-      <TextBlock Grid.Column="0" Text="PM (Pontos de Fadiga)" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <TextBlock Grid.Column="1" Text="{Binding FP}" VerticalAlignment="Center" Classes="ValueLabel"/>
-      <TextBlock Grid.Column="2" Text="Bônus:" VerticalAlignment="Center" Opacity="0.7"/>
-      <NumericUpDown Grid.Column="3" Value="{Binding FPBonus}" Minimum="-5" Maximum="30" Classes="Field"/>
-      <TextBlock Grid.Column="4" Margin="8,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostFP, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+      <!-- PER -->
+      <Border Classes="StatCard" Margin="6">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="StatCardName" Text="PERCEPÇÃO (PER)"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementPer}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding Per}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementPer}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostPer, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="10"/>
+        </StackPanel>
+      </Border>
 
-    <!-- Vontade -->
-    <Grid ColumnDefinitions="140,80,120,80,*">
-      <TextBlock Grid.Column="0" Text="Vontade" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <TextBlock Grid.Column="1" Text="{Binding Will}" VerticalAlignment="Center" Classes="ValueLabel"/>
-      <TextBlock Grid.Column="2" Text="Bônus:" VerticalAlignment="Center" Opacity="0.7"/>
-      <NumericUpDown Grid.Column="3" Value="{Binding WillBonus}" Minimum="-5" Maximum="20" Classes="Field"/>
-      <TextBlock Grid.Column="4" Margin="8,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostWill, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+      <!-- SPEED -->
+      <Border Classes="StatCard" Margin="6">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="StatCardName" Text="VELOCIDADE BÁSICA"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementSpeed}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding BasicSpeed}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementSpeed}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostBasicSpeed, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="10"/>
+        </StackPanel>
+      </Border>
 
-    <!-- Per -->
-    <Grid ColumnDefinitions="140,80,120,80,*">
-      <TextBlock Grid.Column="0" Text="Percepção" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <TextBlock Grid.Column="1" Text="{Binding Per}" VerticalAlignment="Center" Classes="ValueLabel"/>
-      <TextBlock Grid.Column="2" Text="Bônus:" VerticalAlignment="Center" Opacity="0.7"/>
-      <NumericUpDown Grid.Column="3" Value="{Binding PerBonus}" Minimum="-5" Maximum="20" Classes="Field"/>
-      <TextBlock Grid.Column="4" Margin="8,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostPer, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+      <!-- MOVE -->
+      <Border Classes="StatCard" Margin="6">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="StatCardName" Text="DESLOCAMENTO BÁSICO"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementMove}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding BasicMove}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementMove}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostBasicMove, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="10"/>
+        </StackPanel>
+      </Border>
 
-    <!-- Vel. Básica -->
-    <Grid ColumnDefinitions="140,80,120,80,*">
-      <TextBlock Grid.Column="0" Text="Vel. Básica" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <TextBlock Grid.Column="1" Text="{Binding BasicSpeed}" VerticalAlignment="Center" Classes="ValueLabel"/>
-      <TextBlock Grid.Column="2" Text="Bônus (+0.25):" VerticalAlignment="Center" Opacity="0.7"/>
-      <NumericUpDown Grid.Column="3" Value="{Binding BasicSpeedBonus}" Minimum="0" Maximum="20" Classes="Field"/>
-      <TextBlock Grid.Column="4" Margin="8,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostBasicSpeed, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+    </UniformGrid>
 
-    <!-- Deslocamento -->
-    <Grid ColumnDefinitions="140,80,120,80,*">
-      <TextBlock Grid.Column="0" Text="Deslocamento" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <TextBlock Grid.Column="1" Text="{Binding BasicMove}" VerticalAlignment="Center" Classes="ValueLabel"/>
-      <TextBlock Grid.Column="2" Text="Bônus:" VerticalAlignment="Center" Opacity="0.7"/>
-      <NumericUpDown Grid.Column="3" Value="{Binding BasicMoveBonus}" Minimum="0" Maximum="20" Classes="Field"/>
-      <TextBlock Grid.Column="4" Margin="8,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostBasicMove, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
-
-    <TextBlock Margin="0,8,0,0" Opacity="0.6" FontSize="12"
-               Text="PV/PM/Vontade/Per = 2 pts/nível · Vel.(+0.25) = 5 pts · Desl. = 5 pts/nível"/>
-
+    <TextBlock Margin="0,20,0,0" Opacity="0.5" FontSize="10" HorizontalAlignment="Center"
+               Text="PV/PF/Vontade/Per = 2 pts/nível · Velocidade(+0.25) = 5 pts · Deslocamento = 5 pts/nível"/>
   </StackPanel>
 </UserControl>

@@ -7,7 +7,7 @@
         Title="GURPS Wizard"
         Width="1280" Height="850"
         MinWidth="1000" MinHeight="600"
-        Background="{DynamicResource SurfaceColor}">
+        Background="{DynamicResource ColorBgDeep}">
 
   <Window.DataTemplates>
     <DataTemplate DataType="{x:Type vm:HomeViewModel}">
@@ -26,51 +26,46 @@
 
   <Grid ColumnDefinitions="*,Auto,Auto">
     
-    <!-- Área Principal (Wizard) -->
+    <!-- Main Content -->
     <ContentControl Grid.Column="0" Content="{Binding CurrentContent}"/>
 
-    <!-- Divisor Vertical Personalizado -->
-    <GridSplitter Grid.Column="1" Width="2" Background="{DynamicResource DividerColor}" 
-                  IsVisible="{Binding PdfViewer.IsOpen}"
-                  Margin="0,10"/>
+    <!-- Vertical Splitter -->
+    <GridSplitter Grid.Column="1" Width="1" Background="{DynamicResource ColorBorderRule}" 
+                  IsVisible="{Binding PdfViewer.IsOpen}"/>
 
-    <!-- Visualizador de PDF Estilizado -->
+    <!-- PDF Viewer Styled -->
     <Border Grid.Column="2" Width="550" 
-            Background="{DynamicResource SidebarColor}"
+            Background="{DynamicResource ColorBgMain}"
             IsVisible="{Binding PdfViewer.IsOpen}" 
-            BorderBrush="{DynamicResource DividerColor}" 
+            BorderBrush="{DynamicResource ColorBorderRule}" 
             BorderThickness="1,0,0,0">
       
       <Grid RowDefinitions="Auto,*,Auto">
         
         <!-- Header / Toolbar -->
-        <Border Grid.Row="0" Background="{DynamicResource TopBarColor}" Padding="12,8" BorderBrush="{DynamicResource DividerColor}" BorderThickness="0,0,0,1">
+        <Border Grid.Row="0" Background="{DynamicResource ColorBgDeep}" Padding="15,12" BorderBrush="{DynamicResource ColorBorderRule}" BorderThickness="0,0,0,1">
           <Grid ColumnDefinitions="*,Auto,Auto">
             <StackPanel Grid.Column="0" Spacing="2">
-              <TextBlock Text="{Binding PdfViewer.CurrentTitle}" FontWeight="Bold" FontSize="14" Foreground="{DynamicResource AccentColor}" TextTrimming="CharacterEllipsis"/>
-              <TextBlock Text="{Binding PdfViewer.CurrentPageIndex, StringFormat='Página PDF: {0}'}" FontSize="11" Opacity="0.6"/>
+              <TextBlock Text="{Binding PdfViewer.CurrentTitle}" FontFamily="{StaticResource FontDisplay}" FontSize="12" Foreground="{DynamicResource ColorGoldBright}" TextTrimming="CharacterEllipsis"/>
+              <TextBlock Text="{Binding PdfViewer.CurrentPageIndex, StringFormat='PÁGINA {0}'}" FontSize="9" LetterSpacing="0.1" Opacity="0.5"/>
             </StackPanel>
             
-            <!-- Controles de Zoom -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="0,0,12,0">
-              <Button Command="{Binding PdfViewer.ZoomOutCommand}" Padding="8,4" Background="Transparent" ToolTip.Tip="Diminuir Zoom">
-                <TextBlock Text="−" FontWeight="Bold"/>
-              </Button>
-              <TextBlock Text="{Binding PdfViewer.ZoomLevel, StringFormat='{}{0:P0}'}" VerticalAlignment="Center" FontSize="12" Opacity="0.8" Width="45" HorizontalAlignment="Center"/>
-              <Button Command="{Binding PdfViewer.ZoomInCommand}" Padding="8,4" Background="Transparent" ToolTip.Tip="Aumentar Zoom">
-                <TextBlock Text="+" FontWeight="Bold"/>
-              </Button>
+            <!-- Zoom Controls -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="0,0,15,0">
+              <Button Command="{Binding PdfViewer.ZoomOutCommand}" Classes="StatCardBtn" Content="−"/>
+              <TextBlock Text="{Binding PdfViewer.ZoomLevel, StringFormat='{}{0:P0}'}" VerticalAlignment="Center" FontSize="11" Opacity="0.8" Width="45" HorizontalAlignment="Center"/>
+              <Button Command="{Binding PdfViewer.ZoomInCommand}" Classes="StatCardBtn" Content="+"/>
             </StackPanel>
 
-            <Button Grid.Column="2" Classes="DangerButton" Content="Fechar" Command="{Binding PdfViewer.CloseCommand}" FontSize="12"/>
+            <Button Grid.Column="2" Classes="NavBtnSecondary" Content="✕ FECHAR" Command="{Binding PdfViewer.CloseCommand}" FontSize="10" Padding="8,4"/>
           </Grid>
         </Border>
 
-        <!-- Área de Visualização com Fundo Neutro -->
-        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="#111111">
+        <!-- View Area -->
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="#050505">
           <Image Source="{Binding PdfViewer.CurrentPageBitmap}" 
                  Stretch="None" 
-                 Margin="20"
+                 Margin="10"
                  RenderOptions.BitmapInterpolationMode="HighQuality">
             <Image.Transitions>
               <Transitions>
@@ -80,19 +75,19 @@
           </Image>
         </ScrollViewer>
 
-        <!-- Footer / Navegação -->
-        <Border Grid.Row="2" Background="{DynamicResource FooterColor}" Padding="12" BorderBrush="{DynamicResource DividerColor}" BorderThickness="0,1,0,0">
+        <!-- Footer / Navigation -->
+        <Border Grid.Row="2" Background="{DynamicResource ColorBgDeep}" Padding="12" BorderBrush="{DynamicResource ColorBorderRule}" BorderThickness="0,1,0,0">
           <Grid ColumnDefinitions="Auto,*,Auto">
-            <Button Grid.Column="0" Content="Anterior" Command="{Binding PdfViewer.PrevPageCommand}" Width="100" HorizontalContentAlignment="Center"/>
+            <Button Grid.Column="0" Content="ANTERIOR" Command="{Binding PdfViewer.PrevPageCommand}" Classes="NavBtnSecondary" FontSize="10"/>
             
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-               <TextBlock Text="Página" Opacity="0.6"/>
-               <TextBlock Text="{Binding PdfViewer.CurrentPageIndex}" FontWeight="SemiBold"/>
-               <TextBlock Text="de" Opacity="0.6"/>
-               <TextBlock Text="{Binding PdfViewer.TotalPages}" FontWeight="SemiBold"/>
+               <TextBlock Text="PÁGINA" FontSize="9" Opacity="0.5"/>
+               <TextBlock Text="{Binding PdfViewer.CurrentPageIndex}" FontWeight="Bold" Foreground="{DynamicResource ColorGoldAccent}"/>
+               <TextBlock Text="DE" FontSize="9" Opacity="0.5"/>
+               <TextBlock Text="{Binding PdfViewer.TotalPages}" FontWeight="Bold"/>
             </StackPanel>
 
-            <Button Grid.Column="2" Content="Próxima" Command="{Binding PdfViewer.NextPageCommand}" Width="100" HorizontalContentAlignment="Center"/>
+            <Button Grid.Column="2" Content="PRÓXIMA" Command="{Binding PdfViewer.NextPageCommand}" Classes="NavBtnSecondary" FontSize="10"/>
           </Grid>
         </Border>
       </Grid>

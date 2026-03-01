@@ -4,191 +4,191 @@
              x:Class="GurpsWizard.App.Views.ReviewView"
              x:DataType="vm:ReviewViewModel">
 
-  <Grid RowDefinitions="Auto,*,Auto">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Classes="FinalScreenContent" Margin="0,0,0,40">
+      
+      <TextBlock Classes="FinalScreenTitle" 
+                 Text="Pronto para embarcar em sua jornada, aventureiro?"/>
 
-    <!-- Cabeçalho -->
-    <Border Grid.Row="0" Classes="CardBorder" Padding="16" Margin="0,0,0,12">
-      <Grid ColumnDefinitions="*,Auto">
-        <StackPanel Grid.Column="0">
-          <TextBlock Text="{Binding Draft.Name}" FontSize="20" FontWeight="Bold"/>
-          <TextBlock Text="{Binding Draft.Description}" Opacity="0.7" TextWrapping="Wrap"/>
+      <StackPanel Classes="StartBtnWrapper">
+        <TextBlock Classes="StartBtnOrnament" Text="❖"/>
+        <Button Classes="StartBtn" 
+                Content="INICIAR AVENTURA" 
+                Command="{Binding SaveCommand}"/>
+        <TextBlock Classes="StartBtnOrnament" Text="❖"/>
+      </StackPanel>
+
+      <TextBlock Text="{Binding SaveStatus}" 
+                 HorizontalAlignment="Center" 
+                 FontSize="11" 
+                 Foreground="{DynamicResource ColorGoldMid}"
+                 IsVisible="{Binding SaveStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+      <!-- Comprehensive Sheet Grid -->
+      <Grid ColumnDefinitions="*,*" Width="1000" Margin="0,20,0,0">
+        
+        <!-- Left Column -->
+        <StackPanel Grid.Column="0" Spacing="15" Margin="0,0,10,0">
+          
+          <!-- Character Basics -->
+          <Border Classes="FeatureCard">
+            <StackPanel Spacing="8">
+               <TextBlock Text="PERSONAGEM" FontSize="9" Opacity="0.5" LetterSpacing="0.1"/>
+               <TextBlock Text="{Binding Draft.Name}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource ColorGoldAccent}"/>
+               <Rectangle Height="1" Fill="{DynamicResource ColorBorderRule}" Margin="0,5"/>
+               <TextBlock Text="{Binding Draft.Description}" FontSize="12" Opacity="0.8" TextWrapping="Wrap"/>
+            </StackPanel>
+          </Border>
+
+          <!-- Attributes Grid -->
+          <Border Classes="FeatureCard">
+            <StackPanel Spacing="12">
+               <TextBlock Text="ATRIBUTOS" FontSize="9" Opacity="0.5" LetterSpacing="0.1" HorizontalAlignment="Center"/>
+               <UniformGrid Columns="4">
+                  <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="ST" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Draft.Attributes.ST}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                  <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="DX" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Draft.Attributes.DX}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                  <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="IQ" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Draft.Attributes.IQ}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                  <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="HT" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Draft.Attributes.HT}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+                  </StackPanel>
+               </UniformGrid>
+               
+               <Rectangle Height="1" Fill="{DynamicResource ColorBorderRule}" Opacity="0.3"/>
+               
+               <UniformGrid Columns="3">
+                  <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="PV" FontSize="9" Opacity="0.5" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Draft.SecondaryAttributes.HPBonus, StringFormat='{}{0:+#;-#;10}'}" FontSize="14" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                  <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="VONT" FontSize="9" Opacity="0.5" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Draft.SecondaryAttributes.WillBonus, StringFormat='{}{0:+#;-#;10}'}" FontSize="14" HorizontalAlignment="Center"/>
+                  </StackPanel>
+                  <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="PER" FontSize="9" Opacity="0.5" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Draft.SecondaryAttributes.PerBonus, StringFormat='{}{0:+#;-#;10}'}" FontSize="14" HorizontalAlignment="Center"/>
+                  </StackPanel>
+               </UniformGrid>
+            </StackPanel>
+          </Border>
+
+          <!-- Traits List -->
+          <Border Classes="FeatureCard">
+             <StackPanel Spacing="10">
+                <TextBlock Text="VANTAGENS &amp; DESVANTAGENS" FontSize="9" Opacity="0.5" LetterSpacing="0.1"/>
+                <ItemsControl ItemsSource="{Binding Draft.Advantages}">
+                   <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                         <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{Binding Name}" FontSize="11"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Cost, StringFormat='{}{0} pts'}" FontSize="11" Opacity="0.6" Margin="10,0,0,0"/>
+                         </Grid>
+                      </DataTemplate>
+                   </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Rectangle Height="1" Fill="{DynamicResource ColorBorderRule}" Opacity="0.3"/>
+                <ItemsControl ItemsSource="{Binding Draft.Disadvantages}">
+                   <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                         <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{Binding Name}" FontSize="11"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Cost, StringFormat='{}{0} pts'}" FontSize="11" Opacity="0.6" Margin="10,0,0,0"/>
+                         </Grid>
+                      </DataTemplate>
+                   </ItemsControl.ItemTemplate>
+                </ItemsControl>
+             </StackPanel>
+          </Border>
+
         </StackPanel>
-        <Border Grid.Column="1" Classes="CardBorder" Padding="12,8" MinWidth="200">
-          <StackPanel Spacing="3">
-            <TextBlock Text="Distribuição de Pontos" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,4"/>
-            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-              <TextBlock Grid.Row="0" Grid.Column="0" Text="Atributos Primários" FontSize="12"/>
-              <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SpentAttributes, StringFormat='{}{0} pts'}"
-                         FontSize="12" HorizontalAlignment="Right"/>
 
-              <TextBlock Grid.Row="1" Grid.Column="0" Text="Atributos Secundários" FontSize="12"/>
-              <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SpentSecondary, StringFormat='{}{0} pts'}"
-                         FontSize="12" HorizontalAlignment="Right"/>
+        <!-- Right Column -->
+        <StackPanel Grid.Column="1" Spacing="15" Margin="10,0,0,0">
+          
+          <!-- Points Breakdown -->
+          <Border Classes="FeatureCard">
+            <StackPanel Spacing="8">
+               <TextBlock Text="DIVISÃO DE PONTOS" FontSize="9" Opacity="0.5" LetterSpacing="0.1"/>
+               <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                  <TextBlock Grid.Row="0" Grid.Column="0" Text="Atributos" FontSize="11" Opacity="0.7"/>
+                  <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SpentAttributes}" FontSize="11"/>
+                  
+                  <TextBlock Grid.Row="1" Grid.Column="0" Text="Secundários" FontSize="11" Opacity="0.7"/>
+                  <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SpentSecondary}" FontSize="11"/>
+                  
+                  <TextBlock Grid.Row="2" Grid.Column="0" Text="Vantagens" FontSize="11" Opacity="0.7"/>
+                  <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Points.SpentAdvantages}" FontSize="11"/>
+                  
+                  <TextBlock Grid.Row="3" Grid.Column="0" Text="Desvantagens" FontSize="11" Opacity="0.7"/>
+                  <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Points.SpentDisadvantages}" FontSize="11"/>
+                  
+                  <TextBlock Grid.Row="4" Grid.Column="0" Text="Perícias" FontSize="11" Opacity="0.7"/>
+                  <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SpentSkills}" FontSize="11"/>
+               </Grid>
+               <Rectangle Height="1" Fill="{DynamicResource ColorBorderRule}" Margin="0,5"/>
+               <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="TOTAL GASTO" FontWeight="Bold"/>
+                  <TextBlock Grid.Column="1" Text="{Binding Points.Spent, StringFormat='{}{0} / {1}'}" FontWeight="Bold" Foreground="{DynamicResource ColorGoldAccent}"/>
+               </Grid>
+            </StackPanel>
+          </Border>
 
-              <TextBlock Grid.Row="2" Grid.Column="0" Text="Vantagens" FontSize="12"
-                         Foreground="{DynamicResource AccentColor}"/>
-              <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Points.SpentAdvantages, StringFormat='+{0} pts'}"
-                         FontSize="12" HorizontalAlignment="Right"
-                         Foreground="{DynamicResource AccentColor}"/>
+          <!-- Skills List -->
+          <Border Classes="FeatureCard">
+             <StackPanel Spacing="10">
+                <TextBlock Text="PERÍCIAS" FontSize="9" Opacity="0.5" LetterSpacing="0.1"/>
+                <ItemsControl ItemsSource="{Binding Draft.Skills}">
+                   <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                         <Grid ColumnDefinitions="*,Auto,Auto">
+                            <TextBlock Text="{Binding Name}" FontSize="11"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Level, StringFormat='({0})'}" FontSize="11" Opacity="0.5" Margin="10,0"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Cost, StringFormat='{}{0} pts'}" FontSize="11" Opacity="0.6"/>
+                         </Grid>
+                      </DataTemplate>
+                   </ItemsControl.ItemTemplate>
+                </ItemsControl>
+             </StackPanel>
+          </Border>
 
-              <TextBlock Grid.Row="3" Grid.Column="0" Text="Desvantagens" FontSize="12"
-                         Foreground="{DynamicResource DangerColor}"/>
-              <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Points.SpentDisadvantages, StringFormat='{}{0} pts'}"
-                         FontSize="12" HorizontalAlignment="Right"
-                         Foreground="{DynamicResource DangerColor}"/>
+          <!-- Equipment List -->
+          <Border Classes="FeatureCard">
+             <StackPanel Spacing="10">
+                <TextBlock Text="INVENTÁRIO" FontSize="9" Opacity="0.5" LetterSpacing="0.1"/>
+                <ItemsControl ItemsSource="{Binding Draft.Equipment}">
+                   <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                         <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Text="{Binding Quantity, StringFormat='{}{0}x'}" FontSize="10" Opacity="0.5" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="11"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Value, StringFormat='${0:N0}'}" FontSize="11" Opacity="0.6"/>
+                         </Grid>
+                      </DataTemplate>
+                   </ItemsControl.ItemTemplate>
+                </ItemsControl>
+             </StackPanel>
+          </Border>
 
-              <TextBlock Grid.Row="4" Grid.Column="0" Text="Perícias" FontSize="12"/>
-              <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SpentSkills, StringFormat='{}{0} pts'}"
-                         FontSize="12" HorizontalAlignment="Right"/>
-
-              <!-- Separator -->
-              <Rectangle Grid.Row="5" Grid.ColumnSpan="2" Height="1" Margin="0,4"
-                         Fill="{DynamicResource DividerColor}"/>
-
-              <TextBlock Grid.Row="6" Grid.Column="0" Text="Total Gasto" FontWeight="SemiBold" FontSize="12"/>
-              <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding Points.Spent, StringFormat='{}{0} pts'}"
-                         FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Right"/>
-
-              <TextBlock Grid.Row="7" Grid.Column="0" Text="Restante" FontWeight="SemiBold" FontSize="12"
-                         Foreground="{DynamicResource AccentColor}"/>
-              <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding Points.Remaining, StringFormat='{}{0} pts'}"
-                         FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Right"
-                         Foreground="{DynamicResource AccentColor}"/>
-            </Grid>
+          <!-- Final Actions -->
+          <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center" Margin="0,10">
+             <Button Classes="NavBtnSecondary" Content="EXPORTAR JSON" Command="{Binding ExportCommand}" FontSize="10"/>
+             <Button Classes="NavBtnSecondary" Content="EXPORTAR GCS" Command="{Binding ExportGcsCommand}" FontSize="10"/>
           </StackPanel>
-        </Border>
-      </Grid>
-    </Border>
-
-    <!-- Corpo da ficha em duas colunas -->
-    <ScrollViewer Grid.Row="1">
-      <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,Auto">
-
-        <!-- Coluna esquerda: Atributos + Vantagens + Desvantagens -->
-        <StackPanel Grid.Column="0" Spacing="12">
-
-          <!-- Atributos -->
-          <Border Classes="CardBorder" Padding="12">
-            <StackPanel Spacing="4">
-              <TextBlock Text="Atributos" Classes="SectionTitle"/>
-              <Grid ColumnDefinitions="*,*,*,*">
-                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                  <TextBlock Text="ST" Classes="AttrLabel"/>
-                  <TextBlock Text="{Binding Draft.Attributes.ST}" Classes="AttrValue"/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                  <TextBlock Text="DX" Classes="AttrLabel"/>
-                  <TextBlock Text="{Binding Draft.Attributes.DX}" Classes="AttrValue"/>
-                </StackPanel>
-                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                  <TextBlock Text="IQ" Classes="AttrLabel"/>
-                  <TextBlock Text="{Binding Draft.Attributes.IQ}" Classes="AttrValue"/>
-                </StackPanel>
-                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
-                  <TextBlock Text="HT" Classes="AttrLabel"/>
-                  <TextBlock Text="{Binding Draft.Attributes.HT}" Classes="AttrValue"/>
-                </StackPanel>
-              </Grid>
-            </StackPanel>
-          </Border>
-
-          <!-- Vantagens -->
-          <Border Classes="CardBorder" Padding="12">
-            <StackPanel Spacing="4">
-              <TextBlock Text="Vantagens" Classes="SectionTitle"/>
-              <ItemsControl ItemsSource="{Binding Draft.Advantages}">
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <Grid ColumnDefinitions="*,60">
-                      <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                      <TextBlock Grid.Column="1" Text="{Binding Cost, StringFormat='{}{0} pts'}"
-                                 HorizontalAlignment="Right" Opacity="0.7"/>
-                    </Grid>
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
-            </StackPanel>
-          </Border>
-
-          <!-- Desvantagens -->
-          <Border Classes="CardBorder" Padding="12">
-            <StackPanel Spacing="4">
-              <TextBlock Text="Desvantagens" Classes="SectionTitle"/>
-              <ItemsControl ItemsSource="{Binding Draft.Disadvantages}">
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <Grid ColumnDefinitions="*,60">
-                      <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                      <TextBlock Grid.Column="1" Text="{Binding Cost, StringFormat='{}{0} pts'}"
-                                 HorizontalAlignment="Right" Opacity="0.7"/>
-                    </Grid>
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
-            </StackPanel>
-          </Border>
 
         </StackPanel>
 
-        <!-- Coluna direita: Perícias + Equipamento -->
-        <StackPanel Grid.Column="2" Spacing="12">
-
-          <!-- Perícias -->
-          <Border Classes="CardBorder" Padding="12">
-            <StackPanel Spacing="4">
-              <TextBlock Text="Perícias" Classes="SectionTitle"/>
-              <ItemsControl ItemsSource="{Binding Draft.Skills}">
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <Grid ColumnDefinitions="*,50,60">
-                      <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                      <TextBlock Grid.Column="1" Text="{Binding Level, StringFormat='{}{0:+#;-#;0}'}"
-                                 HorizontalAlignment="Center" Opacity="0.7"/>
-                      <TextBlock Grid.Column="2" Text="{Binding Cost, StringFormat='{}{0} pts'}"
-                                 HorizontalAlignment="Right" Opacity="0.7"/>
-                    </Grid>
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
-            </StackPanel>
-          </Border>
-
-          <!-- Equipamento -->
-          <Border Classes="CardBorder" Padding="12">
-            <StackPanel Spacing="4">
-              <TextBlock Text="Equipamento" Classes="SectionTitle"/>
-              <ItemsControl ItemsSource="{Binding Draft.Equipment}">
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <Grid ColumnDefinitions="*,80">
-                      <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                      <TextBlock Grid.Column="1" Text="{Binding Value, StringFormat='$ {0:N2}'}"
-                                 HorizontalAlignment="Right" Opacity="0.7"/>
-                    </Grid>
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-              </ItemsControl>
-            </StackPanel>
-          </Border>
-
-        </StackPanel>
       </Grid>
-    </ScrollViewer>
 
-    <!-- Rodapé: status + botões -->
-    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="16"
-                HorizontalAlignment="Right" Margin="0,12,0,0">
-      <TextBlock Text="{Binding SaveStatus}" VerticalAlignment="Center" Opacity="0.8"/>
-      <Button Content="Exportar JSON"
-              Command="{Binding ExportCommand}"
-              Padding="12,6"/>
-      <Button Content="Exportar GCS"
-              Command="{Binding ExportGcsCommand}"
-              Padding="12,6"/>
-      <Button Content="Salvar Personagem"
-              Command="{Binding SaveCommand}"
-              Classes="AccentButton"/>
     </StackPanel>
-
-  </Grid>
+  </ScrollViewer>
 </UserControl>

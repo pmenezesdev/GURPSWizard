@@ -2,205 +2,332 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="GurpsWizard.App.App"
              RequestedThemeVariant="Dark">
-
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.ThemeDictionaries>
-
-        <!-- ── Paleta Dark (Catppuccin Mocha) ──────────────────────────────── -->
         <ResourceDictionary x:Key="Dark">
-          <SolidColorBrush x:Key="AccentColor"             Color="#F9E2AF"/>
-          <SolidColorBrush x:Key="DangerColor"             Color="#F38BA8"/>
-          <SolidColorBrush x:Key="SurfaceColor"            Color="#313244"/>
-          <SolidColorBrush x:Key="SidebarColor"            Color="#1E1E2E"/>
-          <SolidColorBrush x:Key="DividerColor"            Color="#45475A"/>
-          <SolidColorBrush x:Key="TopBarColor"             Color="#181825"/>
-          <SolidColorBrush x:Key="FooterColor"             Color="#181825"/>
-          <SolidColorBrush x:Key="ColumnDividerColor"      Color="#44FFFFFF"/>
-          <SolidColorBrush x:Key="AccentButtonForeground"  Color="#1E1E2E"/>
-          <SolidColorBrush x:Key="OverlayColor"            Color="#22000000"/>
-          <SolidColorBrush x:Key="SubtleSurface"           Color="#22FFFFFF"/>
-        </ResourceDictionary>
+          <SolidColorBrush x:Key="ColorBgDeep"         Color="#0a0a08"/>
+          <SolidColorBrush x:Key="ColorBgMain"         Color="#111109"/>
+          <SolidColorBrush x:Key="ColorBgCard"         Color="#BF1E1810"/>
+          <SolidColorBrush x:Key="ColorBgCardHover"    Color="#E62D2414"/>
+          <SolidColorBrush x:Key="ColorBgCardSelected" Color="#F23C3019"/>
+          <SolidColorBrush x:Key="ColorBgButton"       Color="#D9231C0F"/>
+          <SolidColorBrush x:Key="ColorBgDisabled"     Color="#8014120E"/>
 
-        <!-- ── Paleta Light (GURPS Parchment) ──────────────────────────────── -->
-        <ResourceDictionary x:Key="Light">
-          <SolidColorBrush x:Key="AccentColor"             Color="#7B5E22"/>
-          <SolidColorBrush x:Key="DangerColor"             Color="#C0392B"/>
-          <SolidColorBrush x:Key="SurfaceColor"            Color="#EDE6D3"/>
-          <SolidColorBrush x:Key="SidebarColor"            Color="#DDD4BE"/>
-          <SolidColorBrush x:Key="DividerColor"            Color="#B8A98A"/>
-          <SolidColorBrush x:Key="TopBarColor"             Color="#C9BFA6"/>
-          <SolidColorBrush x:Key="FooterColor"             Color="#C9BFA6"/>
-          <SolidColorBrush x:Key="ColumnDividerColor"      Color="#66000000"/>
-          <SolidColorBrush x:Key="AccentButtonForeground"  Color="#F5F0E8"/>
-          <SolidColorBrush x:Key="OverlayColor"            Color="#22000000"/>
-          <SolidColorBrush x:Key="SubtleSurface"           Color="#22000000"/>
-        </ResourceDictionary>
+          <SolidColorBrush x:Key="ColorGoldBright"     Color="#f5efda"/>
+          <SolidColorBrush x:Key="ColorGoldMid"        Color="#d4c4a1"/>
+          <SolidColorBrush x:Key="ColorGoldDim"        Color="#a19275"/>
+          <SolidColorBrush x:Key="ColorGoldAccent"     Color="#ffcc33"/>
+          <SolidColorBrush x:Key="ColorTextCard"       Color="#f5efda"/>
+          <SolidColorBrush x:Key="ColorTextDisabled"   Color="#665c4d"/>
+          <SolidColorBrush x:Key="ColorTextStep"       Color="#bfb095"/>
 
+          <SolidColorBrush x:Key="ColorBorderCard"     Color="#60B49450"/>
+          <SolidColorBrush x:Key="ColorBorderHover"    Color="#A0B49450"/>
+          <SolidColorBrush x:Key="ColorBorderSelected" Color="#FFD4AF25"/>
+          <SolidColorBrush x:Key="ColorBorderRule"     Color="#55B49450"/>
+          <SolidColorBrush x:Key="ColorBorderButton"   Color="#99B49450"/>
+
+          <SolidColorBrush x:Key="ColorOverlay"        Color="#80000000"/>
+          <SolidColorBrush x:Key="ColorRefBg"          Color="#33000000"/>
+
+          <SolidColorBrush x:Key="AccentColor"         Color="#f5efda"/>
+          <SolidColorBrush x:Key="DangerColor"         Color="#ff8080"/>
+          <SolidColorBrush x:Key="SurfaceColor"        Color="#1E1810"/>
+        </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
+      
+      <FontFamily x:Key="FontDisplay">Cinzel, Trajan Pro, Palatino Linotype, serif</FontFamily>
+      <FontFamily x:Key="FontBody">Cinzel Decorative, Palatino Linotype, serif</FontFamily>
+      <FontFamily x:Key="FontUI">Cinzel, serif</FontFamily>
+      
+      <RadialGradientBrush x:Key="BackgroundGradient" Center="50%,30%" GradientOrigin="50%,30%" RadiusX="80%" RadiusY="80%">
+        <GradientStop Color="#6632230A" Offset="0"/>
+        <GradientStop Color="#FF0A0A08" Offset="1"/>
+      </RadialGradientBrush>
     </ResourceDictionary>
   </Application.Resources>
-
+  
   <Application.Styles>
     <FluentTheme/>
-
-    <!-- ── Validações ────────────────────────────────────────────────────── -->
-    <Style Selector="TextBox.ValidationError">
-      <Setter Property="BorderBrush" Value="{DynamicResource DangerColor}"/>
-      <Setter Property="BorderThickness" Value="1.5"/>
+    
+    <Style Selector="Panel.WizardScreen">
+      <Setter Property="Background" Value="{DynamicResource ColorBgDeep}"/>
+      <Setter Property="TextBlock.FontFamily" Value="{StaticResource FontDisplay}"/>
+      <Setter Property="TextBlock.Foreground" Value="{DynamicResource ColorGoldBright}"/>
     </Style>
-
-    <Style Selector="TextBlock.ValidationHint">
-      <Setter Property="Foreground" Value="{DynamicResource DangerColor}"/>
-      <Setter Property="FontSize"   Value="12"/>
+    
+    <Style Selector="Border.WizardHeader">
+      <Setter Property="Height" Value="50"/>
+      <Setter Property="ZIndex" Value="10"/>
+      <Setter Property="Padding" Value="20,0"/>
     </Style>
-
-    <!-- ── Feedback de pontos ─────────────────────────────────────────────── -->
-    <Style Selector="TextBlock.PointsWarning">
-      <Setter Property="Foreground"  Value="{DynamicResource DangerColor}"/>
-      <Setter Property="Opacity"     Value="1"/>
-      <Setter Property="FontWeight"  Value="SemiBold"/>
-    </Style>
-
-    <!-- ── Tipografia ─────────────────────────────────────────────────────── -->
-    <Style Selector="TextBlock.FieldLabel">
-      <Setter Property="FontWeight"  Value="Medium"/>
-      <Setter Property="Margin"      Value="0,0,0,4"/>
-      <Setter Property="Opacity"     Value="0.85"/>
-    </Style>
-
-    <Style Selector="TextBlock.SectionTitle">
-      <Setter Property="FontSize"      Value="14"/>
-      <Setter Property="FontWeight"    Value="SemiBold"/>
-      <Setter Property="Foreground"    Value="{DynamicResource AccentColor}"/>
-      <Setter Property="Margin"        Value="0,0,0,6"/>
-      <Setter Property="TextDecorations" Value="Underline"/>
-    </Style>
-
-    <Style Selector="TextBlock.CostLabel">
-      <Setter Property="FontWeight" Value="SemiBold"/>
-      <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
-    </Style>
-
-    <Style Selector="TextBlock.ValueLabel">
-      <Setter Property="FontSize"   Value="20"/>
-      <Setter Property="FontWeight" Value="Bold"/>
-    </Style>
-
-    <Style Selector="TextBlock.AttrLabel">
-      <Setter Property="FontSize"  Value="11"/>
-      <Setter Property="Opacity"   Value="0.6"/>
-      <Setter Property="HorizontalAlignment" Value="Center"/>
-    </Style>
-
-    <Style Selector="TextBlock.AttrValue">
-      <Setter Property="FontSize"   Value="24"/>
-      <Setter Property="FontWeight" Value="Bold"/>
-      <Setter Property="HorizontalAlignment" Value="Center"/>
-    </Style>
-
-    <!-- ── Botões ─────────────────────────────────────────────────────────── -->
-    <Style Selector="Button.AccentButton">
-      <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
-      <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}"/>
-      <Setter Property="FontWeight" Value="SemiBold"/>
-      <Setter Property="CornerRadius" Value="4"/>
-    </Style>
-
-    <Style Selector="Button.DangerButton">
-      <Setter Property="Background" Value="Transparent"/>
-      <Setter Property="Foreground" Value="{DynamicResource DangerColor}"/>
-      <Setter Property="BorderBrush" Value="Transparent"/>
-    </Style>
-
-    <Style Selector="Button.NavButton">
-      <Setter Property="Padding"      Value="16,8"/>
-      <Setter Property="CornerRadius" Value="4"/>
-    </Style>
-
-    <Style Selector="Button.IconButton">
-      <Setter Property="Background"   Value="Transparent"/>
-      <Setter Property="BorderBrush"  Value="Transparent"/>
-      <Setter Property="Padding"      Value="8,4"/>
-      <Setter Property="FontSize"     Value="16"/>
-      <Setter Property="Cursor"       Value="Hand"/>
-    </Style>
-
-    <!-- ── Layout ─────────────────────────────────────────────────────────── -->
-    <Style Selector="Border.TopBar">
-      <Setter Property="Background" Value="{DynamicResource TopBarColor}"/>
-    </Style>
-
-    <Style Selector="Border.Footer">
-      <Setter Property="Background" Value="{DynamicResource FooterColor}"/>
-    </Style>
-
-    <Style Selector="Border.Sidebar">
-      <Setter Property="Background" Value="{DynamicResource SidebarColor}"/>
-    </Style>
-
-    <Style Selector="Border.CardBorder">
-      <Setter Property="Background"    Value="{DynamicResource SurfaceColor}"/>
-      <Setter Property="CornerRadius"  Value="6"/>
-      <Setter Property="BoxShadow"     Value="0 2 8 0 #28000000"/>
-    </Style>
-
-    <Style Selector="Border.PointsBadge">
-      <Setter Property="Background"   Value="{DynamicResource SurfaceColor}"/>
-      <Setter Property="CornerRadius" Value="20"/>
-    </Style>
-
-    <Style Selector="Border.PointsBadgeWarning">
-      <Setter Property="Background"   Value="{DynamicResource DangerColor}"/>
-      <Setter Property="CornerRadius" Value="20"/>
-    </Style>
-
-    <Style Selector="Border.PointsBadgeWarning TextBlock">
-      <Setter Property="Foreground" Value="White"/>
-    </Style>
-
-    <!-- ── Decoração GURPS ────────────────────────────────────────────────── -->
-    <!-- Separador ornamental: linha + ícone + linha -->
-    <Style Selector="Grid.GurpsRule Rectangle">
-      <Setter Property="Height"              Value="1"/>
-      <Setter Property="Fill"                Value="{DynamicResource AccentColor}"/>
-      <Setter Property="Opacity"             Value="0.45"/>
-      <Setter Property="VerticalAlignment"   Value="Center"/>
-    </Style>
-
-    <Style Selector="Grid.GurpsRule TextBlock">
-      <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
-      <Setter Property="Opacity"    Value="0.6"/>
-      <Setter Property="FontSize"   Value="13"/>
-      <Setter Property="Margin"     Value="8,0"/>
+    
+    <Style Selector="TextBlock.WizardHeaderTitle">
+      <Setter Property="FontFamily" Value="{StaticResource FontDisplay}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldDim}"/>
+      <Setter Property="LetterSpacing" Value="0.08"/>
       <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
-
-    <!-- ── Sidebar step indicators ───────────────────────────────────────── -->
-    <Style Selector="Border.StepItem">
-      <Setter Property="Padding"   Value="10,7"/>
-      <Setter Property="Margin"    Value="4,1"/>
+    
+    <Style Selector="Button.WizardHeaderExit">
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldDim}"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="8,4"/>
+    </Style>
+    <Style Selector="Button.WizardHeaderExit:pointerover /template/ ContentPresenter">
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+    <Style Selector="StackPanel.WizardContent">
+      <Setter Property="Spacing" Value="0"/>
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="MaxWidth" Value="1100"/>
+      <Setter Property="Margin" Value="40,20"/>
+    </Style>
+    
+    <Style Selector="TextBlock.WizardPageTitle">
+      <Setter Property="FontFamily" Value="{StaticResource FontDisplay}"/>
+      <Setter Property="FontSize" Value="32"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+    
+    <Style Selector="TextBlock.WizardPageStep">
+      <Setter Property="FontSize" Value="11"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorTextStep}"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="Margin" Value="0,0,0,14"/>
+    </Style>
+    
+    <Style Selector="Rectangle.WizardDivider">
+      <Setter Property="Height" Value="1"/>
+      <Setter Property="Fill" Value="{DynamicResource ColorBorderRule}"/>
+      <Setter Property="Margin" Value="0,0,0,32"/>
+      <Setter Property="MaxWidth" Value="800"/>
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+    
+    <Style Selector="Border.FeatureCard">
+      <Setter Property="Background" Value="{DynamicResource ColorBgCard}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderCard}"/>
+      <Setter Property="BorderThickness" Value="1"/>
       <Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="Padding" Value="16,20"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.18"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.18"/>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+        </Transitions>
+      </Setter>
     </Style>
-
-    <Style Selector="Border.StepItemCurrent">
-      <Setter Property="Background"       Value="{DynamicResource SurfaceColor}"/>
-      <Setter Property="BorderThickness"  Value="3,0,0,0"/>
-      <Setter Property="BorderBrush"      Value="{DynamicResource AccentColor}"/>
+    <Style Selector="Border.FeatureCard:pointerover">
+      <Setter Property="Background" Value="{DynamicResource ColorBgCardHover}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderHover}"/>
+      <Setter Property="RenderTransform" Value="scale(1.01)"/>
     </Style>
-
-    <Style Selector="Border.StepItemCurrent TextBlock">
-      <Setter Property="Foreground"  Value="{DynamicResource AccentColor}"/>
-      <Setter Property="FontWeight"  Value="SemiBold"/>
+    
+    <Style Selector="TextBlock.FeatureCardName">
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorTextCard}"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="TextAlignment" Value="Center"/>
+      <Setter Property="LineHeight" Value="1.3"/>
     </Style>
-
-    <Style Selector="TextBlock.StepIndexDone">
-      <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+    
+    <Style Selector="Button.SelBtn">
+      <Setter Property="Background" Value="{DynamicResource ColorBgButton}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderButton}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="3"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
+      <Setter Property="FontFamily" Value="{StaticResource FontDisplay}"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="Padding" Value="8,10"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.18"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.18"/>
+          <BrushTransition Property="Foreground" Duration="0:0:0.18"/>
+        </Transitions>
+      </Setter>
     </Style>
-
-    <Style Selector="TextBlock.StepIndexPending">
-      <Setter Property="Opacity" Value="0.4"/>
+    <Style Selector="Button.SelBtn:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource ColorBgCardHover}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderHover}"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
     </Style>
-
+    <Style Selector="ToggleButton.SelBtn:checked /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource ColorBgCardSelected}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderSelected}"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldAccent}"/>
+    </Style>
+    
+    <Style Selector="ListBox.SelectionGrid">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style Selector="ListBox.SelectionGrid ListBoxItem">
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="Margin" Value="4"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+           <ContentPresenter Name="PART_ContentPresenter"
+                             ContentTemplate="{TemplateBinding ContentTemplate}"
+                             Content="{TemplateBinding Content}"
+                             Padding="{TemplateBinding Padding}"
+                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    
+    <Style Selector="Border.StatCard">
+      <Setter Property="Background" Value="{DynamicResource ColorBgCard}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderCard}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="Padding" Value="12,14"/>
+      <Setter Property="MinWidth" Value="150"/>
+    </Style>
+    <Style Selector="Border.StatCardDisabled">
+      <Setter Property="Opacity" Value="0.45"/>
+    </Style>
+    <Style Selector="TextBlock.StatCardName">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldMid}"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="LetterSpacing" Value="0.05"/>
+      <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBlock.StatCardValue">
+      <Setter Property="FontSize" Value="22"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="MinWidth" Value="30"/>
+      <Setter Property="TextAlignment" Value="Center"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style Selector="Button.StatCardBtn">
+      <Setter Property="Width" Value="26"/>
+      <Setter Property="Height" Value="26"/>
+      <Setter Property="CornerRadius" Value="13"/>
+      <Setter Property="Background" Value="#CC322814"/>
+      <Setter Property="BorderBrush" Value="#59B49450"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldMid}"/>
+    </Style>
+    <Style Selector="Button.StatCardBtn:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#E650411E"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorGoldMid}"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldMid}"/>
+    </Style>
+    
+    <Style Selector="Border.WizardFooter">
+      <Setter Property="Height" Value="60"/>
+      <Setter Property="Padding" Value="24,0"/>
+      <Setter Property="ZIndex" Value="10"/>
+    </Style>
+    
+    <Style Selector="Button.NavBtnSecondary">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldDim}"/>
+      <Setter Property="FontFamily" Value="{StaticResource FontDisplay}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Padding" Value="12,8"/>
+    </Style>
+    <Style Selector="Button.NavBtnSecondary:pointerover /template/ ContentPresenter">
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldMid}"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+    <Style Selector="Button.NavBtnPrimary">
+      <Setter Property="Background" Value="{DynamicResource ColorBgCard}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderButton}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="3"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
+      <Setter Property="FontFamily" Value="{StaticResource FontDisplay}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Padding" Value="22,10"/>
+    </Style>
+    <Style Selector="Button.NavBtnPrimary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource ColorBgCardHover}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderHover}"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldAccent}"/>
+    </Style>
+    
+    <Style Selector="Button.RefBtn">
+      <Setter Property="Background" Value="#33000000"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderRule}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="5,1"/>
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldMid}"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.RefBtn:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#66B49450"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
+    </Style>
+    
+    <Style Selector="StackPanel.FinalScreenContent">
+      <Setter Property="Spacing" Value="28"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style Selector="TextBlock.FinalScreenTitle">
+      <Setter Property="FontFamily" Value="{StaticResource FontDisplay}"/>
+      <Setter Property="FontSize" Value="42"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="TextAlignment" Value="Center"/>
+      <Setter Property="MaxWidth" Value="800"/>
+      <Setter Property="LineHeight" Value="1.3"/>
+    </Style>
+    
+    <Style Selector="StackPanel.StartBtnWrapper">
+      <Setter Property="Orientation" Value="Horizontal"/>
+      <Setter Property="Spacing" Value="16"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style Selector="TextBlock.StartBtnOrnament">
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldDim}"/>
+      <Setter Property="FontSize" Value="20"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style Selector="Button.StartBtn">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorBorderButton}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="3"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldBright}"/>
+      <Setter Property="FontFamily" Value="{StaticResource FontDisplay}"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="Padding" Value="40,12"/>
+    </Style>
+    <Style Selector="Button.StartBtn:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#993C3014"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource ColorGoldMid}"/>
+      <Setter Property="Foreground" Value="{DynamicResource ColorGoldAccent}"/>
+    </Style>
   </Application.Styles>
 </Application>

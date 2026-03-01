@@ -4,46 +4,68 @@
              x:Class="GurpsWizard.App.Views.AttributesView"
              x:DataType="vm:AttributesViewModel">
 
-  <StackPanel Spacing="8" MaxWidth="420" HorizontalAlignment="Left">
+  <StackPanel HorizontalAlignment="Center">
+    <UniformGrid Columns="2" MaxWidth="600" HorizontalAlignment="Center">
+      
+      <!-- ST -->
+      <Border Classes="StatCard" Margin="8">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="StatCardName" Text="FORÇA (ST)"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementST}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding ST}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementST}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostST, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="11"/>
+        </StackPanel>
+      </Border>
 
-    <!-- ST -->
-    <Grid ColumnDefinitions="120,160,*">
-      <TextBlock Grid.Column="0" Text="Força (ST)" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <NumericUpDown Grid.Column="1" Value="{Binding ST}"
-                     Minimum="1" Maximum="30" Increment="1" Classes="Field"/>
-      <TextBlock Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostST, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+      <!-- DX -->
+      <Border Classes="StatCard" Margin="8">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="StatCardName" Text="DESTREZA (DX)"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementDX}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding DX}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementDX}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostDX, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="11"/>
+        </StackPanel>
+      </Border>
 
-    <!-- DX -->
-    <Grid ColumnDefinitions="120,160,*">
-      <TextBlock Grid.Column="0" Text="Destreza (DX)" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <NumericUpDown Grid.Column="1" Value="{Binding DX}"
-                     Minimum="1" Maximum="30" Increment="1" Classes="Field"/>
-      <TextBlock Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostDX, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+      <!-- IQ -->
+      <Border Classes="StatCard" Margin="8">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="StatCardName" Text="INTELIGÊNCIA (IQ)"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementIQ}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding IQ}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementIQ}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostIQ, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="11"/>
+        </StackPanel>
+      </Border>
 
-    <!-- IQ -->
-    <Grid ColumnDefinitions="120,160,*">
-      <TextBlock Grid.Column="0" Text="Inteligência (IQ)" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <NumericUpDown Grid.Column="1" Value="{Binding IQ}"
-                     Minimum="1" Maximum="30" Increment="1" Classes="Field"/>
-      <TextBlock Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostIQ, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+      <!-- HT -->
+      <Border Classes="StatCard" Margin="8">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="StatCardName" Text="VITALIDADE (HT)"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
+            <Button Classes="StatCardBtn" Content="−" Command="{Binding DecrementHT}"/>
+            <TextBlock Classes="StatCardValue" Text="{Binding HT}"/>
+            <Button Classes="StatCardBtn" Content="+" Command="{Binding IncrementHT}"/>
+          </StackPanel>
+          <TextBlock Text="{Binding CostHT, StringFormat='{}{0:+#;-#;0} pts'}" 
+                     HorizontalAlignment="Center" Opacity="0.5" FontSize="11"/>
+        </StackPanel>
+      </Border>
 
-    <!-- HT -->
-    <Grid ColumnDefinitions="120,160,*">
-      <TextBlock Grid.Column="0" Text="Saúde (HT)" VerticalAlignment="Center" Classes="FieldLabel"/>
-      <NumericUpDown Grid.Column="1" Value="{Binding HT}"
-                     Minimum="1" Maximum="30" Increment="1" Classes="Field"/>
-      <TextBlock Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Center"
-                 Text="{Binding CostHT, StringFormat='{}{0:+#;-#;0} pts'}" Classes="CostLabel"/>
-    </Grid>
+    </UniformGrid>
 
-    <TextBlock Margin="0,8,0,0" Opacity="0.6" FontSize="12"
+    <TextBlock Margin="0,20,0,0" Opacity="0.5" FontSize="11" HorizontalAlignment="Center"
                Text="ST/HT = 10 pts/nível · DX/IQ = 20 pts/nível"/>
-
   </StackPanel>
 </UserControl>

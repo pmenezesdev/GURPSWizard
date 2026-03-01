@@ -41,6 +41,8 @@ public class WizardViewModel : ReactiveObject
     [Reactive] public bool CanGoNext { get; private set; }
     [Reactive] public double ProgressPercent { get; private set; }
     [Reactive] public bool IsOverBudget { get; private set; }
+    [Reactive] public bool IsLastStep { get; private set; }
+    [Reactive] public string StepIndicator { get; private set; } = string.Empty;
 
     // ── Sidebar steps com status ──────────────────────────────────────────────
     [Reactive] public IReadOnlyList<SidebarStep> SidebarSteps { get; private set; } = [];
@@ -48,6 +50,8 @@ public class WizardViewModel : ReactiveObject
     public IReadOnlyList<IWizardStep> Steps => _engine.Steps;
 
     public ThemeService Theme => ThemeService.Instance;
+
+    public string? BackgroundImage => CurrentStep?.BackgroundImage;
 
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> NextCommand { get; }
     public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit> BackCommand { get; }
@@ -101,6 +105,7 @@ public class WizardViewModel : ReactiveObject
                 if (_stepViewModels.TryGetValue(step.GetType(), out var vm))
                     CurrentStepViewModel = vm;
                 CanGoNext = step.CanProceed(Draft);
+                this.RaisePropertyChanged(nameof(BackgroundImage));
             });
 
         // Comandos
@@ -131,6 +136,8 @@ public class WizardViewModel : ReactiveObject
         CanGoNext       = CurrentStep.CanProceed(Draft);
         ProgressPercent = (double)(_engine.CurrentIndex + 1) / _engine.TotalSteps * 100.0;
         StepIndex       = _engine.CurrentIndex;
+        IsLastStep      = _engine.IsLastStep;
+        StepIndicator   = $"ETAPA {StepIndex + 1} / {_engine.TotalSteps}";
         SidebarSteps    = [.. _engine.Steps.Select((s, i) =>
             new SidebarStep(s.Title, i, i < StepIndex, i == StepIndex))];
     }

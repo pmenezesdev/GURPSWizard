@@ -1,149 +1,173 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="GurpsWizard.App.Views.SkillsView">
+             xmlns:vm="clr-namespace:GurpsWizard.App.ViewModels.Steps"
+             x:Class="GurpsWizard.App.Views.SkillsView"
+             x:DataType="vm:SkillsViewModel">
 
-  <Grid ColumnDefinitions="*,8,300" RowDefinitions="*">
+  <Grid ColumnDefinitions="*,350" RowDefinitions="*">
+    
+    <!-- Left: Selection Area -->
+    <StackPanel Grid.Column="0" Spacing="20" Margin="0,0,20,0">
+      
+      <!-- Filters Card -->
+      <Border Classes="FeatureCard">
+        <StackPanel Spacing="12">
+          <TextBox Text="{Binding SearchQuery}" 
+                   Watermark="BUSCAR PERÍCIAS..."
+                   Background="Transparent"
+                   BorderBrush="{DynamicResource ColorBorderRule}"
+                   BorderThickness="0,0,0,1"/>
+          
+          <Grid ColumnDefinitions="*,*,*">
+            <ComboBox Grid.Column="0"
+                      ItemsSource="{Binding Attributes}"
+                      SelectedItem="{Binding SelectedAttribute}"
+                      PlaceholderText="ATR"
+                      HorizontalAlignment="Stretch"
+                      Background="Transparent"
+                      BorderBrush="{DynamicResource ColorBorderRule}"/>
+            
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding Difficulties}"
+                      SelectedItem="{Binding SelectedDifficulty}"
+                      PlaceholderText="DIFIC"
+                      Margin="10,0"
+                      HorizontalAlignment="Stretch"
+                      Background="Transparent"
+                      BorderBrush="{DynamicResource ColorBorderRule}"/>
 
-    <!-- Coluna esquerda: busca + resultados -->
-    <Grid Grid.Column="0" RowDefinitions="Auto,Auto,Auto,*,Auto,Auto">
+            <ComboBox Grid.Column="2"
+                      ItemsSource="{Binding Categories}"
+                      SelectedItem="{Binding SelectedCategory}"
+                      PlaceholderText="CATEGORIA"
+                      HorizontalAlignment="Stretch"
+                      Background="Transparent"
+                      BorderBrush="{DynamicResource ColorBorderRule}"/>
+          </Grid>
+        </StackPanel>
+      </Border>
 
-      <TextBox Grid.Row="0" Text="{Binding SearchQuery}"
-               Watermark="Buscar perícia..." Margin="0,0,0,6"/>
+      <!-- Selection Grid -->
+      <ScrollViewer Height="380">
+        <ListBox x:Name="SearchResultsList"
+                 Classes="SelectionGrid" 
+                 ItemsSource="{Binding SearchResults}"
+                 SelectedItem="{Binding SelectedLibrarySkill}">
+          <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel HorizontalAlignment="Center"/>
+            </ItemsPanelTemplate>
+          </ListBox.ItemsPanel>
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Panel Width="200" Height="50">
+                 <Border Classes="SelBtn" 
+                         Classes.selected="{Binding $parent[ListBoxItem].IsSelected}"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                   <Grid ColumnDefinitions="*,Auto,Auto">
+                      <TextBlock Text="{Binding DisplayName}" 
+                                 TextTrimming="CharacterEllipsis" 
+                                 VerticalAlignment="Center" 
+                                 FontSize="11"
+                                 Margin="5,0"/>
+                      <Button Grid.Column="1" Classes="RefBtn" Content="{Binding Reference}"
+                              Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
+                              CommandParameter="{Binding}"
+                              IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                              Margin="0,0,5,0"/>
+                      <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="5,0" Opacity="0.6">
+                         <TextBlock Text="{Binding BaseAttribute}" FontSize="9" HorizontalAlignment="Right"/>
+                         <TextBlock Text="{Binding Difficulty}" FontSize="9" HorizontalAlignment="Right"/>
+                      </StackPanel>
+                   </Grid>
+                 </Border>
+              </Panel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </ScrollViewer>
 
-      <Grid Grid.Row="1" ColumnDefinitions="*,8,*" Margin="0,0,0,6">
-        <ComboBox Grid.Column="0"
-                  ItemsSource="{Binding Attributes}"
-                  SelectedItem="{Binding SelectedAttribute}"
-                  PlaceholderText="Atributo"
-                  HorizontalAlignment="Stretch"
-                  ToolTip.Tip="ST = Força · DX = Destreza · IQ = Inteligência · HT = Vitalidade"/>
-        <ComboBox Grid.Column="2"
-                  ItemsSource="{Binding Difficulties}"
-                  SelectedItem="{Binding SelectedDifficulty}"
-                  PlaceholderText="Dificuldade"
-                  HorizontalAlignment="Stretch"
-                  ToolTip.Tip="E = Fácil · A = Médio · H = Difícil · VH = Muito Difícil"/>
-      </Grid>
-
-      <ComboBox Grid.Row="2"
-                ItemsSource="{Binding Categories}"
-                SelectedItem="{Binding SelectedCategory}"
-                PlaceholderText="Categoria"
-                HorizontalAlignment="Stretch"
-                Margin="0,0,0,6"/>
-
-      <ListBox Grid.Row="3" x:Name="SearchResultsList"
-               ItemsSource="{Binding SearchResults}"
-               SelectedItem="{Binding SelectedLibrarySkill}">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <Grid ColumnDefinitions="*,Auto,50,50" ToolTip.Tip="{Binding Notes}">
-              <TextBlock Grid.Column="0" Text="{Binding DisplayName}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-              <Button Grid.Column="1" Padding="4,2" Margin="4,0"
-                      FontSize="10" Foreground="{DynamicResource SystemAccentColor}"
-                      Content="{Binding Reference}"
-                      Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
-                      CommandParameter="{Binding}"
-                      IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                      ToolTip.Tip="Abrir PDF na página"/>
-              <TextBlock Grid.Column="2" Text="{Binding BaseAttribute}"
-                         HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
-              <TextBlock Grid.Column="3" Text="{Binding Difficulty}"
-                         HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
-            </Grid>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-
-      <!-- Seleção de nível relativo -->
-      <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,8,0,4">
-        <TextBlock Grid.Column="0" Text="Nível relativo:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-        <NumericUpDown Grid.Column="1" Value="{Binding RelativeLevel}"
-                       Minimum="-3" Maximum="10"/>
-        <TextBlock Grid.Column="2" Text="Custo:" VerticalAlignment="Center" Margin="12,0,8,0"/>
-        <TextBlock Grid.Column="3" Text="{Binding PreviewCost, StringFormat='{}{0} pts'}"
-                   VerticalAlignment="Center" FontWeight="SemiBold"/>
-      </Grid>
-
-      <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-        <Button Content="Adicionar" Command="{Binding AddCommand}"/>
-        <Button Content="+ Personalizado" Command="{Binding ToggleCustomFormCommand}"
-                FontSize="11" Padding="8,4"
-                ToolTip.Tip="Criar perícia personalizada"/>
+      <!-- Action Area -->
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+         <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <TextBlock Text="NÍVEL RELATIVO:" VerticalAlignment="Center" FontSize="10" Opacity="0.6"/>
+            <NumericUpDown Value="{Binding RelativeLevel}" Minimum="-3" Maximum="10" Width="80"/>
+            <TextBlock Text="{Binding PreviewCost, StringFormat='{}CUSTO: {0} PTS'}" 
+                       VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold" 
+                       Foreground="{DynamicResource ColorGoldAccent}" Margin="10,0"/>
+         </StackPanel>
+         <Button Classes="NavBtnPrimary" Content="ADICIONAR" Command="{Binding AddCommand}"/>
+         <Button Classes="NavBtnSecondary" Content="+ PERSONALIZAR" Command="{Binding ToggleCustomFormCommand}"/>
       </StackPanel>
-    </Grid>
+    </StackPanel>
 
-    <!-- Painel de criação personalizada -->
-    <Border Grid.Column="0" Grid.ColumnSpan="3"
-            Background="{DynamicResource SubtleSurface}" CornerRadius="6"
-            Padding="12,10" Margin="0,6,0,0"
-            IsVisible="{Binding ShowCustomForm}"
-            BorderBrush="{DynamicResource DividerColor}" BorderThickness="1"
-            VerticalAlignment="Bottom">
-      <StackPanel Spacing="8" DataContext="{Binding CustomSkillForm}">
-        <TextBlock Text="Criar Perícia Personalizada" FontWeight="SemiBold" FontSize="13"/>
-        <Grid ColumnDefinitions="*,8,100,8,100" RowDefinitions="Auto,8,Auto">
-          <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Name}" Watermark="Nome"/>
-          <ComboBox Grid.Row="0" Grid.Column="2"
-                    ItemsSource="{Binding BaseAttributes}"
-                    SelectedItem="{Binding BaseAttribute}"
-                    HorizontalAlignment="Stretch"/>
-          <ComboBox Grid.Row="0" Grid.Column="4"
-                    ItemsSource="{Binding Difficulties}"
-                    SelectedItem="{Binding Difficulty}"
-                    HorizontalAlignment="Stretch"/>
-          <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-            <TextBlock Text="Nível relativo:" VerticalAlignment="Center" Opacity="0.7"/>
-            <NumericUpDown Value="{Binding RelativeLevel}"
-                           Minimum="-3" Maximum="10" Increment="1"
-                           Width="80" FormatString="0"/>
-            <TextBlock Text="{Binding PreviewCost, StringFormat='Custo: {0} pts'}"
-                       VerticalAlignment="Center" FontWeight="SemiBold"/>
-          </StackPanel>
-        </Grid>
-        <Button Content="Criar" Command="{Binding CreateCommand}"
-                HorizontalAlignment="Right" Padding="12,4"/>
-      </StackPanel>
+    <!-- Right: Added List -->
+    <Border x:Name="AddedPanel" Grid.Column="1" Classes="FeatureCard">
+      <Grid RowDefinitions="Auto,1,*,Auto,Auto">
+        <TextBlock Grid.Row="0" Text="PERÍCIAS SELECIONADAS" 
+                   HorizontalAlignment="Center" FontSize="12" LetterSpacing="0.1" Margin="0,0,0,10"/>
+        <Rectangle Grid.Row="1" Fill="{DynamicResource ColorBorderRule}" Margin="0,0,0,10"/>
+        
+        <ListBox Grid.Row="2" 
+                 ItemsSource="{Binding AddedSkills}" 
+                 SelectedItem="{Binding SelectedAddedSkill}"
+                 Background="Transparent" BorderThickness="0">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+               <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                 <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="11" TextWrapping="Wrap"/>
+                 <Button Grid.Column="1" Classes="RefBtn" Content="{Binding Reference}"
+                         Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
+                         CommandParameter="{Binding}"
+                         IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                         Margin="5,0"/>
+                 <TextBlock Grid.Column="2" Text="{Binding Level, StringFormat='{}{0:+#;-#;0}'}" 
+                            FontSize="9" Opacity="0.5" Margin="5,0" VerticalAlignment="Center"/>
+                 <TextBlock Grid.Column="3" Text="{Binding Cost, StringFormat='{}{0} pts'}" 
+                            FontSize="11" Opacity="0.8" VerticalAlignment="Center"/>
+               </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Button Grid.Row="3" 
+                Classes="NavBtnSecondary" 
+                Content="REMOVER SELECIONADO" 
+                Command="{Binding RemoveSelectedCommand}"
+                HorizontalAlignment="Center"
+                Margin="0,10,0,0"
+                FontSize="10"/>
+
+        <TextBlock Grid.Row="4" 
+                   Text="Adicione ao menos uma perícia para continuar."
+                   Classes="ValidationHint"
+                   IsVisible="{Binding HasNoSkills}"
+                   HorizontalAlignment="Center"
+                   Margin="0,10,0,0"
+                   FontSize="10"/>
+      </Grid>
     </Border>
 
-    <Rectangle Grid.Column="1" Fill="{DynamicResource ColumnDividerColor}"/>
-
-    <!-- Coluna direita: perícias adicionadas (drop target para drag & drop) -->
-    <Grid Grid.Column="2" x:Name="AddedPanel" RowDefinitions="Auto,*,Auto,Auto">
-      <TextBlock Grid.Row="0" Text="Perícias selecionadas" FontWeight="SemiBold" Margin="0,0,0,6"/>
-
-      <ListBox Grid.Row="1"
-               ItemsSource="{Binding AddedSkills}"
-               SelectedItem="{Binding SelectedAddedSkill}">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <Grid ColumnDefinitions="*,Auto,40,50">
-              <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-              <Button Grid.Column="1" Padding="4,2" Margin="4,0"
-                      FontSize="10" Foreground="{DynamicResource SystemAccentColor}"
-                      Content="{Binding Reference}"
-                      Command="{Binding $parent[UserControl].DataContext.OpenReferenceCommand}"
-                      CommandParameter="{Binding}"
-                      IsVisible="{Binding Reference, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                      ToolTip.Tip="Abrir PDF na página"/>
-              <TextBlock Grid.Column="2" Text="{Binding Level, StringFormat='{}{0:+#;-#;0}'}"
-                         HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7"/>
-              <TextBlock Grid.Column="3" Text="{Binding Cost, StringFormat='{}{0} pts'}"
-                         HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.7"/>
-            </Grid>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-
-      <Button Grid.Row="2" Content="Remover selecionado"
-              Command="{Binding RemoveSelectedCommand}"
-              HorizontalAlignment="Right" Margin="0,6,0,0"/>
-      <TextBlock Grid.Row="3"
-                 Text="Adicione ao menos uma perícia para continuar."
-                 Classes="ValidationHint"
-                 IsVisible="{Binding HasNoSkills}"
-                 Margin="0,6,0,0"/>
-    </Grid>
+    <!-- Custom Form Overlay -->
+    <Border Grid.ColumnSpan="2" 
+            Classes="FeatureCard" 
+            VerticalAlignment="Bottom" 
+            IsVisible="{Binding ShowCustomForm}"
+            BoxShadow="0 0 20 5 #80000000">
+       <StackPanel Spacing="10" DataContext="{Binding CustomSkillForm}">
+          <TextBlock Text="CRIAR PERÍCIA PERSONALIZADA" FontSize="12" HorizontalAlignment="Center"/>
+          <StackPanel Orientation="Horizontal" Spacing="10">
+             <TextBox Text="{Binding Name}" Watermark="NOME" Width="200"/>
+             <ComboBox ItemsSource="{Binding BaseAttributes}" SelectedItem="{Binding BaseAttribute}" Width="100"/>
+             <ComboBox ItemsSource="{Binding Difficulties}" SelectedItem="{Binding Difficulty}" Width="100"/>
+             <NumericUpDown Value="{Binding RelativeLevel}" Minimum="-3" Maximum="10" Watermark="NÍVEL REL" Width="120"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+             <Button Classes="NavBtnSecondary" Content="CANCELAR" Command="{Binding $parent[UserControl].DataContext.ToggleCustomFormCommand}"/>
+             <Button Classes="NavBtnPrimary" Content="CRIAR" Command="{Binding CreateCommand}"/>
+          </StackPanel>
+       </StackPanel>
+    </Border>
 
   </Grid>
 </UserControl>

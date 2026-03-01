@@ -6,6 +6,7 @@ public class SkillsStep : IWizardStep
 {
     public string Title => "Perícias";
     public string Description => "Selecione ao menos uma perícia para o personagem.";
+    public string? BackgroundImage => "/Assets/Images/Steps/bg_skills.png";
     public bool CanProceed(CharacterDraft draft) => draft.Skills.Count > 0;
     public Task OnEnterAsync(CharacterDraft draft) => Task.CompletedTask;
     public Task OnLeaveAsync(CharacterDraft draft) => Task.CompletedTask;
