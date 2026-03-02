@@ -161,16 +161,27 @@ public class TraitsViewModel : ReactiveObject
         var entry = SelectedAddedTrait;
         if (entry is null) return;
 
-        var d       = _wizard.Draft;
-        var newList = _isDisadvantage
-            ? d.Disadvantages.Where(t => t != entry).ToList()
-            : d.Advantages   .Where(t => t != entry).ToList();
+        var d    = _wizard.Draft;
+        var src  = _isDisadvantage ? d.Disadvantages : d.Advantages;
+        var newList = RemoveFirstOccurrence(src, entry);
 
         _wizard.Draft = _isDisadvantage
             ? d with { Disadvantages = newList }
             : d with { Advantages    = newList };
 
         SelectedAddedTrait = null;
+    }
+
+    // Remove apenas a primeira ocorrência de entry (records usam value equality,
+    // então Where(t != entry) removeria todas as cópias com mesmo valor).
+    private static List<T> RemoveFirstOccurrence<T>(IEnumerable<T> source, T entry)
+    {
+        bool removed = false;
+        return source.Where(t =>
+        {
+            if (!removed && EqualityComparer<T>.Default.Equals(t, entry)) { removed = true; return false; }
+            return true;
+        }).ToList();
     }
 }
 

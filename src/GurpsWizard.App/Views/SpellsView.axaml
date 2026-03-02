@@ -18,9 +18,9 @@
                    BorderBrush="{DynamicResource ColorBorderRule}"
                    BorderThickness="0,0,0,1"/>
           
-          <ComboBox ItemsSource="{Binding Categories}"
-                    SelectedItem="{Binding SelectedCategory}"
-                    PlaceholderText="TODAS AS ESCOLAS / CATEGORIAS"
+          <ComboBox ItemsSource="{Binding Colleges}"
+                    SelectedItem="{Binding SelectedCollege}"
+                    PlaceholderText="TODAS AS ESCOLAS"
                     HorizontalAlignment="Stretch"
                     Background="Transparent"
                     BorderBrush="{DynamicResource ColorBorderRule}"/>

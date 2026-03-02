@@ -102,8 +102,18 @@ public class TechniquesViewModel : ReactiveObject
         var entry = SelectedAddedTechnique;
         if (entry is null) return;
 
-        var newList   = (_wizard.Draft.Techniques ?? []).Where(t => t != entry).ToList();
+        var newList   = RemoveFirstOccurrence(_wizard.Draft.Techniques ?? [], entry);
         _wizard.Draft = _wizard.Draft with { Techniques = newList };
         SelectedAddedTechnique = null;
+    }
+
+    private static List<T> RemoveFirstOccurrence<T>(IEnumerable<T> source, T entry)
+    {
+        bool removed = false;
+        return source.Where(t =>
+        {
+            if (!removed && EqualityComparer<T>.Default.Equals(t, entry)) { removed = true; return false; }
+            return true;
+        }).ToList();
     }
 }
