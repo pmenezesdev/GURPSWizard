@@ -100,18 +100,6 @@ public partial class App : Application
         Directory.CreateDirectory(appDataDir);
         var dbPath = Path.Combine(appDataDir, "gurpswizard.db");
 
-        // Se não há banco do usuário, copia o banco pré-populado da release (se existir)
-        if (!File.Exists(dbPath))
-        {
-            var seedPath = FindSeedDb();
-            if (seedPath is not null)
-            {
-                progress.Report("Copiando banco de dados inicial…");
-                File.Copy(seedPath, dbPath);
-                SettingsService.Log($"Banco seed copiado de: {seedPath}");
-            }
-        }
-
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseSqlite($"Data Source={dbPath}")
             .Options;
@@ -120,10 +108,18 @@ public partial class App : Application
         var loader      = new GcsLoader();
         var initializer = new DatabaseInitializer(db, loader);
 
-        var gcsPath = FindGcsPath();
+        var gcsPath  = FindGcsPath();
+        var seedPath = FindSeedDb();
+
         if (gcsPath is not null)
         {
             await initializer.InitializeAsync(gcsPath, progress);
+        }
+        else if (seedPath is not null)
+        {
+            // Sem pasta gcs-ptbr (release distribuída): usa o banco seed para preencher
+            // tabelas de biblioteca vazias preservando personagens existentes.
+            await initializer.SeedFromExistingDbAsync(seedPath, progress);
         }
         else
         {

@@ -12,6 +12,67 @@ namespace GurpsWizard.Data;
 public class DatabaseInitializer(AppDbContext db, GcsLoader loader)
 {
     /// <summary>
+    /// Preenche tabelas de biblioteca vazias copiando do banco seed.
+    /// Usado quando não há pasta gcs-ptbr disponível (distribuição release).
+    /// Preserva personagens existentes — só toca em tabelas de biblioteca vazias.
+    /// </summary>
+    public async Task<bool> SeedFromExistingDbAsync(string seedDbPath, IProgress<string>? progress = null)
+    {
+        progress?.Report("Aplicando migrações…");
+        await db.Database.MigrateAsync();
+
+        var seedOptions = new DbContextOptionsBuilder<AppDbContext>()
+            .UseSqlite($"Data Source={seedDbPath}")
+            .Options;
+        using var seed = new AppDbContext(seedOptions);
+
+        bool anyLoaded = false;
+
+        if (!await db.LibraryTraits.AnyAsync())
+        {
+            progress?.Report("Carregando vantagens…");
+            db.LibraryTraits.AddRange(await seed.LibraryTraits.AsNoTracking().ToListAsync());
+            await db.SaveChangesAsync();
+            anyLoaded = true;
+        }
+
+        if (!await db.LibrarySkills.AnyAsync())
+        {
+            progress?.Report("Carregando perícias…");
+            db.LibrarySkills.AddRange(await seed.LibrarySkills.AsNoTracking().ToListAsync());
+            await db.SaveChangesAsync();
+            anyLoaded = true;
+        }
+
+        if (!await db.LibraryTechniques.AnyAsync())
+        {
+            progress?.Report("Carregando técnicas…");
+            db.LibraryTechniques.AddRange(await seed.LibraryTechniques.AsNoTracking().ToListAsync());
+            await db.SaveChangesAsync();
+            anyLoaded = true;
+        }
+
+        if (!await db.LibrarySpells.AnyAsync())
+        {
+            progress?.Report("Carregando mágicas…");
+            db.LibrarySpells.AddRange(await seed.LibrarySpells.AsNoTracking().ToListAsync());
+            await db.SaveChangesAsync();
+            anyLoaded = true;
+        }
+
+        if (!await db.LibraryEquipment.AnyAsync())
+        {
+            progress?.Report("Carregando equipamentos…");
+            db.LibraryEquipment.AddRange(await seed.LibraryEquipment.AsNoTracking().ToListAsync());
+            await db.SaveChangesAsync();
+            anyLoaded = true;
+        }
+
+        progress?.Report(anyLoaded ? "Biblioteca pronta!" : "Biblioteca já carregada.");
+        return anyLoaded;
+    }
+
+    /// <summary>
     /// Inicializa o banco. Retorna true se alguma dado foi carregado agora.
     /// <paramref name="gcsDataPath"/> deve apontar para o diretório raiz de gcs-ptbr.
     /// </summary>
