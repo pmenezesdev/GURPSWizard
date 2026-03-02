@@ -100,6 +100,18 @@ public partial class App : Application
         Directory.CreateDirectory(appDataDir);
         var dbPath = Path.Combine(appDataDir, "gurpswizard.db");
 
+        // Se não há banco do usuário, copia o banco pré-populado da release (se existir)
+        if (!File.Exists(dbPath))
+        {
+            var seedPath = FindSeedDb();
+            if (seedPath is not null)
+            {
+                progress.Report("Copiando banco de dados inicial…");
+                File.Copy(seedPath, dbPath);
+                SettingsService.Log($"Banco seed copiado de: {seedPath}");
+            }
+        }
+
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseSqlite($"Data Source={dbPath}")
             .Options;
@@ -115,25 +127,60 @@ public partial class App : Application
         }
         else
         {
-            progress.Report("Dados GCS não encontrados — aplicando migrações…");
+            progress.Report("Aplicando migrações…");
             await db.Database.MigrateAsync();
-            progress.Report("Pronto (sem dados de biblioteca).");
+            progress.Report("Pronto.");
         }
 
         return (new LibraryRepository(db), new CharacterRepository(db));
     }
 
-    private static string? FindGcsPath()
+    /// <summary>
+    /// Localiza gurpswizard_seed.db ao lado do executável real.
+    /// Em single-file apps, AppContext.BaseDirectory aponta para o diretório temporário
+    /// de extração — é necessário usar Environment.ProcessPath para encontrar o exe.
+    /// </summary>
+    private static string? FindSeedDb()
     {
-        var dir = AppContext.BaseDirectory;
-        while (dir is not null)
+        foreach (var dir in ExeDirs())
         {
-            var candidate = Path.Combine(dir, "data", "gcs-ptbr");
-            if (Directory.Exists(candidate))
+            var candidate = Path.Combine(dir, "gurpswizard_seed.db");
+            if (File.Exists(candidate))
                 return candidate;
-            dir = Path.GetDirectoryName(dir);
         }
         return null;
+    }
+
+    private static string? FindGcsPath()
+    {
+        foreach (var start in ExeDirs())
+        {
+            var dir = start;
+            while (dir is not null)
+            {
+                var candidate = Path.Combine(dir, "data", "gcs-ptbr");
+                if (Directory.Exists(candidate))
+                    return candidate;
+                dir = Path.GetDirectoryName(dir);
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Retorna os diretórios a verificar: ao lado do exe real e o BaseDirectory.
+    /// Evita duplicatas (em build normal os dois são iguais).
+    /// </summary>
+    private static IEnumerable<string> ExeDirs()
+    {
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        var processDir = Path.GetDirectoryName(Environment.ProcessPath);
+        if (processDir is not null && seen.Add(processDir))
+            yield return processDir;
+
+        if (seen.Add(AppContext.BaseDirectory))
+            yield return AppContext.BaseDirectory;
     }
 
     /// <summary>Concatena mensagens de toda a cadeia de exceções.</summary>
